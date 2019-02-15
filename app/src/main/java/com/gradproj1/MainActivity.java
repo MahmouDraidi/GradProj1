@@ -44,6 +44,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener {
 
+// todo fuck you draidi <3
 
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
