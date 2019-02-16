@@ -14,7 +14,9 @@ public class user {
     private String name;
     private String line;
 
+    user() {
 
+    }
     user(String mobileNumber, String name, String PIN, GeoPoint currentLocation, String line) {
         this.mobileNumber = mobileNumber;
         this.PIN = PIN;

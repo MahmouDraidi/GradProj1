@@ -64,7 +64,7 @@ public class login extends AppCompatActivity {
 
     public void move(SharedPreferences.Editor SPE){
 
-        SPE.putString("number",moblile_num_textview.getText().toString());
+        SPE.putString("number", "+972" + moblile_num_textview.getText().toString().trim());
         SPE.apply();
 
         Intent i=new Intent(this,MainActivity.class);

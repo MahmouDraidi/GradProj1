@@ -9,7 +9,7 @@ public class driver {
     private String vehicleNumber;
     private String PIN;
     private String line;
-    boolean isActive;
+    private boolean isActive;
 
     public driver() {
     }
@@ -70,5 +70,13 @@ public class driver {
 
     public void setLine(String line) {
         this.line = line;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
