@@ -8,7 +8,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 
 import android.util.Log;
 import android.view.View;
@@ -35,10 +34,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.okhttp.internal.DiskLruCache;
+import com.google.firebase.firestore.GeoPoint;
 
-import java.sql.Ref;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -62,26 +59,92 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        db= FirebaseFirestore.getInstance();
-        SP=getSharedPreferences("mobile_number", MODE_PRIVATE);
-        final SharedPreferences.Editor SPE=SP.edit();
+        db = FirebaseFirestore.getInstance();
+        SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
+        final SharedPreferences.Editor SPE = SP.edit();
 
-        if(!SP.getString("number","").equals(""))
-        User=new user(this,SP.getString("number",""));
-        else return;
 
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                User.setPhoneNumber(db,"+972595403748");
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
-                showDrivers();
+            public void onClick(final View view) {
+
+
+               /* mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));*/
+
+
+               /* List<String> d, dd, d1, dd1, dd2, d2;
+                String[] acDrivers = {"Faleh1", "Asmar2", "Sweed7", "Zabadi6"};
+                String[] nonAcDrivers = {"Malik3", "Firas", "Adly5"};
+                d = Arrays.asList(acDrivers);
+                dd = Arrays.asList(nonAcDrivers);
+
+                String[] acDrivers1 = {"Hashem1", "Ahmed2", "Foud5"};
+                String[] nonAcDrivers1 = {"Moayyad6", "Issa3", "AbHisham4"};
+                d1 = Arrays.asList(acDrivers1);
+                dd1 = Arrays.asList(nonAcDrivers1);
+
+                String[] acDrivers2 = {"Driver1", "Driver4", "Driver5"};
+                String[] nonAcDrivers2 = {"Driver2", "Driver3", "Driver6", "Driver7"};
+                d2 = Arrays.asList(acDrivers2);
+                dd2 = Arrays.asList(nonAcDrivers2);
+
+                line L1=new line(new GeoPoint(32.263394,35.253545),new GeoPoint(32.264537,35.130564),"Nablus - BaytLid",d,dd);
+                line L2=new line(new GeoPoint(32.221553,35.129784),new GeoPoint(32.312233,35.027102),"Tulkarm - BaytLid",d1,dd1);
+                line L3=new line(new GeoPoint(32.221553,35.129784),new GeoPoint(32.403815,35.207732),"Nablus - Arraba",d2,dd2);
+                */
+
+               /*  GeoPoint GP1 = new GeoPoint(32.260257, 35.129973);
+                GeoPoint GP2 = new GeoPoint(32.407120, 35.203915);
+                GeoPoint GP3 = new GeoPoint(32.313411, 35.033419);
+               user u1 = new user("+972595403748", "Mahmoud Draidi", "1234", GP1, "Nablus - Baytlid");
+                user u2 = new user("+972595435114", "Mohammed Obaid", "1234", GP2, "Nablus - Arraba");
+                user u3 = new user("+972597606430", "Kotada Draidi" , "1234", GP3, "Tulkarm - Baytlid");
+
+
+
+                driver d1=new driver("Driver1",new GeoPoint(32.399210, 35.195875),"Driver1 d","147741","1234" , "Nablus - Arraba",true);
+                driver d2=new driver("Driver2",new GeoPoint(32.417210, 35.195875),"Driver2 dd","987789","1234", "Nablus - Arraba",false);
+                driver d3=new driver("Driver3",new GeoPoint(32.439210, 35.195575),"Driver3 ddm","147741","1234" , "Nablus - Arraba",false);
+                driver d4=new driver("Driver4",new GeoPoint(32.409255, 35.195875),"Driver4 req","147741","1234" , "Nablus - Arraba",true);
+                driver d5=new driver("Driver5",new GeoPoint(32.409610, 35.192275),"Driver5 qwerty","987789","1234", "Nablus - Arraba",true);
+                driver d6=new driver("Driver6",new GeoPoint(32.405210, 35.191175),"Driver6 erwer","147741","1234" , "Nablus - Arraba",false);
+                driver d7=new driver("Driver7",new GeoPoint(32.407210, 35.193875),"Driver7 rwer","147741","1234" , "Nablus - Arraba",false);
+
+                db.collection("drivers").document(d1.getMobileNum()).set(d1);
+                db.collection("drivers").document(d2.getMobileNum()).set(d2);
+                db.collection("drivers").document(d3.getMobileNum()).set(d3);
+                db.collection("drivers").document(d4.getMobileNum()).set(d4);
+                db.collection("drivers").document(d5.getMobileNum()).set(d5);
+                db.collection("drivers").document(d6.getMobileNum()).set(d6);
+                db.collection("drivers").document(d7.getMobileNum()).set(d7);*/
+
+
+                /*db.collection("lines").whereArrayContains("activeDrivers", "Faleh1").get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                String sss = "";
+
+
+                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                    line L = documentSnapshot.toObject(line.class);
+                                    sss += documentSnapshot.get("name") + "\n";
+                                }
+                                toastMessage(sss);
+
+
+
+                                Snackbar.make(view, sss, Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
+                        });*/
+
+
+                // showDrivers();
 
             }
         });
@@ -141,14 +204,19 @@ public class MainActivity extends AppCompatActivity
             public void onProviderDisabled(String s) {
             }
         };*/
-                }
+    }
+
+    public void toastMessage(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+
+    }
 
 
     @SuppressWarnings("MissingPermission")
     private Location getLastKnownLocation() {
 
         LocationManager mLocationManager;
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
@@ -214,12 +282,12 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_sign_out) {
 
-            SharedPreferences SP=getSharedPreferences("mobile_number", MODE_PRIVATE);
-            SharedPreferences.Editor SPE=SP.edit();
+            SharedPreferences SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
+            SharedPreferences.Editor SPE = SP.edit();
             SPE.clear();
             SPE.apply();
 
-            startActivity(new Intent(this,login.class));
+            startActivity(new Intent(this, login.class));
             finish();
 
         }
@@ -232,34 +300,35 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("MissingPermission")
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Location ML=getLastKnownLocation();
-        LatLng myLocation=(new LatLng(ML.getLatitude(),ML.getLongitude()));
+        Location ML = getLastKnownLocation();
+        LatLng myLocation = (new LatLng(ML.getLatitude(), ML.getLongitude()));
 
         // Add a marker in Sydney and move the camera
 
         mMap.addMarker(new MarkerOptions().position(myLocation).title("Marker in Sydney")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_marker_icon)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15f));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f));
 
 
         mMap.setMyLocationEnabled(true);
 
 
-        Log.d("Your location is: ",ML.toString());
+        Log.d("Your location is: ", ML.toString());
 
     }
-    public void showDrivers(){
+
+    public void showDrivers() {
 
 
-        DocumentReference m=db.collection("drivers").document("Asmar2");
+        DocumentReference m = db.collection("drivers").document("Asmar2");
         m.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists()){
-                            String line=documentSnapshot.getString("line");
+                        if (documentSnapshot.exists()) {
+                            String line = documentSnapshot.getString("line");
 
-                            toast(SP.getString("number","")+" , Your line is: "+line);
+                            toastMessage(SP.getString("number", "") + " , Your line is: " + line);
 
 
                         }
@@ -274,10 +343,6 @@ public class MainActivity extends AppCompatActivity
                         L.add(documentSnapshot.get("drivers").toString());
                     }
                 });*/
-    }
-    public void toast(String s){
-        Toast.makeText(this,s,Toast.LENGTH_LONG).show();
-
     }
 
 

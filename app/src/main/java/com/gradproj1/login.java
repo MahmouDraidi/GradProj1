@@ -50,7 +50,7 @@ public class login extends AppCompatActivity {
         //continue to app if location permission is garanteed
         getLocationPermission();
 
-
+        //TODO Authentication
         //((TextView)findViewById(R.id.textView5)).setText(SP.getString("number",""));
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
