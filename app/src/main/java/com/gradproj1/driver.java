@@ -1,5 +1,7 @@
 package com.gradproj1;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.firestore.GeoPoint;
 
 public class driver {
@@ -10,6 +12,7 @@ public class driver {
     private String PIN;
     private String line;
     private boolean isActive;
+    Marker driverMarker;
 
     public driver() {
     }
@@ -78,5 +81,9 @@ public class driver {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public void drawMarker(GoogleMap googleMap, GeoPoint GP) {
+        // driverMarker=new Marker();
     }
 }

@@ -14,7 +14,8 @@
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="numberDecimal"
+        android:hint="595123456"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Button"
+        android:text="Log in"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/signUp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,5 +79,6 @@
         app:layout_constraintEnd_toStartOf="@+id/mobile_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>
