@@ -1,6 +1,7 @@
 package com.gradproj1;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,12 +10,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -22,23 +30,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.TimeUnit;
+import java.util.zip.Inflater;
 
 public class login extends AppCompatActivity {
 
     Button loginButton;
     boolean mLocationPermissionGranted = false;
-    TextView moblile_num_textview;
-    String entered_moblie_num;
-    FirebaseAuth auth;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallback;
-    String verification_code = "";
+    TextView mobile_num_editText;
     TextView signUpTextView;
     SharedPreferences SP;
-
-
-
+    LinearLayout LinLay1;
+    FirebaseFirestore db;
+    String entered_number = "";
 
 
     @Override
@@ -48,96 +55,99 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
-        // final SharedPreferences.Editor SPE = SP.edit();
         getLocationPermission();
 
         if (!SP.getString("number", "").equals("")) {
-            startActivity(new Intent(this, MainActivity.class));
-
-            return;
+            //TODO redirect to user or driver
+            startActivity(new Intent(this, userMap.class));
+            finish();
         }
 
-        auth = FirebaseAuth.getInstance();
+
         loginButton = (Button) findViewById(R.id.loginButton);
-        moblile_num_textview = (TextView) findViewById(R.id.mobile_number);
+        mobile_num_editText = (TextView) findViewById(R.id.mobile_number);
         signUpTextView = (TextView) findViewById(R.id.signUp);
-
-        mCallback = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-
-            }
-
-            @Override
-            public void onVerificationFailed(FirebaseException e) {
-
-            }
-
-            @Override
-            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-                verification_code = s;
-                toastMessage("Code is sent to your device, \ncheck your messages. ");
-            }
-
-        };
+        LinLay1 = (LinearLayout) findViewById(R.id.linLay);
+        db = FirebaseFirestore.getInstance();
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (loginButton.getText().toString().equalsIgnoreCase("Log in")) {
-                    send_sms();
-                    loginButton.setText("Verify");
-                } else if (loginButton.getText().toString().equals("Verify")) {
-
-                    verifyMobileNumber();
+                if (mobile_num_editText.getText().toString().length() != 10)
+                    toastMessage("Please enter valid number");
+                else {
+                    entered_number = "+97" + mobile_num_editText.getText().toString();
+                    defineUser(entered_number);
                 }
             }
         });
         //end of button onClick listener
-
     }
 
-    public void send_sms() {
-        entered_moblie_num = "+970" + moblile_num_textview.getText().toString();
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(entered_moblie_num, 60, TimeUnit.SECONDS, this, mCallback);
-        moblile_num_textview.setText("");
-
-    }
-
-    private void signWithPhone(PhoneAuthCredential credential) {
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+    public void defineUser(final String mobNumber) {
+        db.collection("users").document(mobNumber).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //here you can open new activity
-                            Toast.makeText(getApplicationContext(), "Login Successfull", Toast.LENGTH_LONG).show();
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            user User = documentSnapshot.toObject(user.class);
+
+                            SP.edit().putString("number", User.getMobileNumber()).apply();
+                            SP.edit().putString("line", User.getLine()).apply();
+                            SP.edit().putString("type", "user").apply();
+                            SP.edit().putString("name", User.getName()).apply();
+                            SP.edit().putString("PIN", User.getPIN()).apply();
                             move();
+
                         } else {
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Incorrect Verification Code ", Toast.LENGTH_LONG).show();
-                            }
+                            defineDriver(mobNumber);
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        toastMessage("Something went wrong!");
+                    }
+                });
+
+
+    }
+
+    public void defineDriver(String mobNum) {
+
+        db.collection("drivers").document(mobNum).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            toastMessage("Driver is found");
+                            driver Driver = documentSnapshot.toObject(driver.class);
+
+                            SP.edit().putString("number", Driver.getMobileNum()).apply();
+                            SP.edit().putString("line", Driver.getLine()).apply();
+                            SP.edit().putString("type", "Driver").apply();
+                            SP.edit().putString("name", Driver.getName()).apply();
+                            SP.edit().putString("PIN", Driver.getPIN()).apply();
+                            move();
+
+                        } else toastMessage("This number is not registered, you need to sign up");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        toastMessage("Something went wrong!");
                     }
                 });
     }
 
-    public void verifyMobileNumber() {
-        String inputCode = moblile_num_textview.getText().toString();
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verification_code, inputCode);
-        signWithPhone(credential);
-    }
 
     public void move() {
-        SharedPreferences.Editor SPE = SP.edit();
-        SPE.putString("number", "+972" + moblile_num_textview.getText().toString().trim());
-        SPE.apply();
-
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, verification.class);
         startActivity(i);
+
     }
 
     public void toastMessage(String s) {
@@ -164,12 +174,10 @@ public class login extends AppCompatActivity {
 
                     for (int i = 0; i < grantResults.length; i++) {
                         if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                            mLocationPermissionGranted = false;
                             System.exit(0);
                         }
                     }
                     mLocationPermissionGranted = true;
-
                 }
         }
     }

@@ -3,6 +3,7 @@ package com.gradproj1;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.List;
+import java.util.Map;
 
 public class line {
     private GeoPoint garage1;
@@ -10,21 +11,22 @@ public class line {
     private String name;
     private List<String> activeDrivers;
     private List<String> nonActiveDrivers;
+    private Map<String, user> activeUsers;
 
-    public List<String> getActiveDrivers() {
-        return activeDrivers;
-    }
+
+
 
 
     public line() {
     }
 
-    public line(GeoPoint garage1, GeoPoint garage2, String name, List<String> activeDrivers, List<String> nonActiveDrivers) {
+    public line(GeoPoint garage1, GeoPoint garage2, String name, List<String> activeDrivers, List<String> nonActiveDrivers, Map<String, user> activeUsers) {
         this.garage1 = garage1;
         this.garage2 = garage2;
         this.name = name;
         this.activeDrivers = activeDrivers;
         this.nonActiveDrivers = nonActiveDrivers;
+        this.activeUsers = activeUsers;
     }
 
     public GeoPoint getGarage1() {
@@ -61,5 +63,17 @@ public class line {
 
     public void setNonActiveDrivers(List<String> nonActiveDrivers) {
         this.nonActiveDrivers = nonActiveDrivers;
+    }
+
+    public Map<String, user> getActiveUsers() {
+        return activeUsers;
+    }
+
+    public void setActiveUsers(Map<String, user> activeUsers) {
+        this.activeUsers = activeUsers;
+    }
+
+    public List<String> getActiveDrivers() {
+        return activeDrivers;
     }
 }
