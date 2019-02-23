@@ -44,12 +44,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener {
 
-// todo fuck you draidi <3
-    // todo fuck you draidi <3
-    // todo fuck you draidi <3
-    // todo fuck you draidi <3
-    // todo fuck you draidi <3
-
 
 
 
@@ -62,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     user User;
     private FirebaseFirestore db;
     SharedPreferences SP;
+
 
 
     @Override
