@@ -10,7 +10,7 @@ import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 
-public class    user {
+public class user {
     private Context context;
     private String phoneNumber;
     private String PIN;
@@ -19,6 +19,7 @@ public class    user {
     private String transportation_line;
     private String line;
 
+//
 
 
     public user(Context context,String phoneNumber) {
@@ -27,6 +28,7 @@ public class    user {
     }
 
     public String getLine() {
+
         return line;
     }
 
