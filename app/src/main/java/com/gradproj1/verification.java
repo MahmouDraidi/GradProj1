@@ -31,6 +31,7 @@ public class verification extends AppCompatActivity {
     TextView signUpTextView;
     SharedPreferences SP;
     LinearLayout LinLay1, LinLay2;
+    String phone_num = "";
 
 
     @Override
@@ -47,12 +48,19 @@ public class verification extends AppCompatActivity {
         LinLay1 = (LinearLayout) findViewById(R.id.linLay);
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
 
+        Bundle data = getIntent().getExtras();
+        phone_num = data.getString("number");
+
+
 
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO uncomment verify and remove the uncommented when enabling verification
                 // verifyMobileNumber();
+                SP.edit().putString("number", phone_num).apply();
                 move();
+
             }
         });
 
@@ -78,13 +86,11 @@ public class verification extends AppCompatActivity {
             }
 
         };
-        //  send_sms(SP.getString("number",""));
+
+        // send_sms(phone_num);
     }
 
     public void send_sms(String s) {
-        toastMessage(s);
-
-
         PhoneAuthProvider.getInstance().verifyPhoneNumber(s, 60, TimeUnit.SECONDS, this, mCallback);
     }
 
@@ -102,7 +108,10 @@ public class verification extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //here you can open new activity
                             Toast.makeText(getApplicationContext(), "Login Successfull", Toast.LENGTH_LONG).show();
-                            move();
+                            SP.edit().putString("number", phone_num).apply();
+                            toastMessage(phone_num);
+                            //  move();
+                            finish();
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 Toast.makeText(getApplicationContext(),
@@ -123,6 +132,7 @@ public class verification extends AppCompatActivity {
                 startActivity(i);
                 break;
             case "driver":
+                toastMessage("HHHHHHHHHH");
                 i = new Intent(this, driverMap.class);
                 startActivity(i);
                 break;

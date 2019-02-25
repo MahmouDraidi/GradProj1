@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -51,6 +52,7 @@ import com.google.firebase.firestore.auth.User;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -59,13 +61,10 @@ public class driverMap extends AppCompatActivity
 
 
     private GoogleMap mMap;
-    private boolean mPermissionDenied = false;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     LocationManager locationManager;
     LocationListener locationListener;
-    Marker marker;
-    user User;
-    String userMobileNumber;
+    driver Driver;
+    String driverMobileNumber;
     FirebaseFirestore db;
     SharedPreferences SP;
     line myLine;
@@ -81,12 +80,12 @@ public class driverMap extends AppCompatActivity
         setSupportActionBar(toolbar);
         db = FirebaseFirestore.getInstance();
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
-        final SharedPreferences.Editor SPE = SP.edit();
-        userMobileNumber = SP.getString("number", "");
+        driverMobileNumber = SP.getString("number", "");
         polylines = new ArrayList<>();
+        initDriver();
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -94,7 +93,8 @@ public class driverMap extends AppCompatActivity
 
                /* mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));*/
-                buildLineRoute();
+                // buildLineRoute();
+                toastMessage(fab.getBackgroundTintList().toString());
 
             }
         });
@@ -109,6 +109,11 @@ public class driverMap extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View menuHeaderView = navigationView.getHeaderView(0);
+        ((TextView) (menuHeaderView.findViewById(R.id.myNameView))).setText(Driver.getName());
+        ((TextView) (menuHeaderView.findViewById(R.id.myLineView))).setText(Driver.getLine());
+
+
         //Intialize map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -121,31 +126,29 @@ public class driverMap extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        //TODO change fixed line
-        db.collection("lines").document("Nablus - BaytLid").get()
+
+        db.collection("lines").document(Driver.getLine()).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                         if (documentSnapshot.exists()) {
                             myLine = documentSnapshot.toObject(line.class);
-                            List<String> active_drivers = myLine.getActiveDrivers();
+                            Map<String, user> active_users = myLine.getActiveUsers();
 
-                            for (String driverID : active_drivers) {
-                                db.collection("drivers").document(driverID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            for (String userID : active_users.keySet()) {
+                                db.collection("drivers").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                                         if (e != null) {
-                                            toastMessage("Failed to load drivers");
+                                            toastMessage("Failed to load users");
                                             return;
                                         }
                                         if (documentSnapshot.exists()) {
 
                                             mMap.clear();
-
-                                            showDrivers();
+                                            showPassengers();
                                             drawMyLoacation(false);
-
                                         }
                                     }
                                 });
@@ -255,7 +258,7 @@ public class driverMap extends AppCompatActivity
         // Add a marker in Sydney and move the camera
 
         mMap.addMarker(new MarkerOptions().position(myLocation).title("Me")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_marker_icon)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
         if (moveCam)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 12f));
     }
@@ -265,15 +268,15 @@ public class driverMap extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
-        getUser();
+        getDriver();
 
         drawMyLoacation(true);
-        buildLineRoute();
+        //buildLineRoute();
 
     }
 
     //get all user info in instance from DB
-    public void getUser() {
+    public void getDriver() {
 
         db.collection("users").document("+972595403748").get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -281,10 +284,8 @@ public class driverMap extends AppCompatActivity
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                         if (documentSnapshot.exists()) {
-                            User = documentSnapshot.toObject(user.class);
+                            Driver = documentSnapshot.toObject(driver.class);
                             showDrivers();
-                            toastMessage("User is intialized");
-
 
                         } else {
                             toastMessage("Document not found");
@@ -294,13 +295,41 @@ public class driverMap extends AppCompatActivity
                 });
     }
 
+    private void initDriver() {
+        Driver.setLine(SP.getString("line", ""));
+        Driver.setMobileNumber(SP.getString("number", ""));
+        Driver.setName(SP.getString("name", ""));
+        Driver.setPIN(SP.getString("PIN", ""));
+    }
+
+    public void showPassengers() {
+
+        db.collection("lines").document(Driver.getLine()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            line myLine = documentSnapshot.toObject(line.class);
+                            Map<String, user> activeUsers = myLine.getActiveUsers();
+
+                            for (user u : activeUsers.values()) {
+                                GeoPoint GP = u.getCurrentLocation();
+                                LatLng loc = new LatLng(GP.getLatitude(), GP.getLongitude());
+                                mMap
+                                        .addMarker(new MarkerOptions().position(loc).title(u.getName())
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
+                            }
+                        }
+                    }
+                });
+    }
 
     public void showDrivers() {
-        String lineOfUser = "";
-        lineOfUser = User.getLine();
+        String lineOfDriver = "";
+        lineOfDriver = Driver.getLine();
 
 
-        db.collection("lines").document(lineOfUser).get()
+        db.collection("lines").document(lineOfDriver).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -316,13 +345,11 @@ public class driverMap extends AppCompatActivity
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                 if (documentSnapshot.exists()) {
                                                     driver dr = documentSnapshot.toObject(driver.class);
-
                                                     GeoPoint GP = dr.getCurrentLocation();
                                                     LatLng loc = new LatLng(GP.getLatitude(), GP.getLongitude());
-
-                                                    mMap.addMarker(new MarkerOptions().position(loc).title(dr.getName())
+                                                    mMap
+                                                            .addMarker(new MarkerOptions().position(loc).title(dr.getName())
                                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
-
                                                 }
                                             }
                                         });

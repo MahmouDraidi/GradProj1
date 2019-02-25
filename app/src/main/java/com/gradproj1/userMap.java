@@ -1,7 +1,9 @@
 package com.gradproj1;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -43,13 +46,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -70,7 +76,7 @@ public class userMap extends AppCompatActivity
     line myLine;
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
-
+    public static int reserved = 0;
 
 
     @Override
@@ -88,17 +94,34 @@ public class userMap extends AppCompatActivity
         initUser();
 
 
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override
+
+            @SuppressLint("RestrictedApi")
             public void onClick(final View view) {
-
-
                /* mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));*/
-                buildLineRoute();
+                //buildLineRoute();
+                fab.setVisibility(View.GONE);
+                fab2.setVisibility(View.VISIBLE);
+                Map<String, user> usObj = new HashMap<>();
+                usObj.put(User.getMobileNumber(), User);
+                db.collection("lines").document(User.getLine()).update("activeUsers." + User.getMobileNumber(), User);
+//
 
+
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View view) {
+                fab2.setVisibility(View.GONE);
+                fab.setVisibility(View.VISIBLE);
+                db.collection("lines").document(User.getLine()).update("activeUsers." + User.getMobileNumber(), FieldValue.delete());
+//
             }
         });
 
@@ -111,6 +134,11 @@ public class userMap extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View menuHeaderView = navigationView.getHeaderView(0);
+        ((TextView) (menuHeaderView.findViewById(R.id.myNameView))).setText(User.getName());
+        ((TextView) (menuHeaderView.findViewById(R.id.myLineView))).setText(User.getLine());
+
 
         //Intialize map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -126,8 +154,6 @@ public class userMap extends AppCompatActivity
         User.setMobileNumber(SP.getString("number", ""));
         User.setName(SP.getString("name", ""));
         User.setPIN(SP.getString("PIN", ""));
-
-
     }
 
     @Override
@@ -284,7 +310,7 @@ public class userMap extends AppCompatActivity
         getUser();
 
         drawMyLoacation(true);
-        buildLineRoute();
+        //buildLineRoute();
 
     }
 
@@ -299,7 +325,6 @@ public class userMap extends AppCompatActivity
                         if (documentSnapshot.exists()) {
                             User = documentSnapshot.toObject(user.class);
                             showDrivers();
-
 
 
                         } else {

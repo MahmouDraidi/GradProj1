@@ -57,6 +57,7 @@ public class login extends AppCompatActivity {
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
         getLocationPermission();
 
+        //if user or driver already logged pass log in activity
         if (!SP.getString("number", "").equals("")) {
             //TODO redirect to user or driver
             startActivity(new Intent(this, userMap.class));
@@ -74,10 +75,10 @@ public class login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (mobile_num_editText.getText().toString().length() != 10)
+                if (false/*mobile_num_editText.getText().toString().length() != 10*/)
                     toastMessage("Please enter valid number");
                 else {
-                    entered_number = "+97" + mobile_num_editText.getText().toString();
+                    entered_number = /*"+97" +*/ mobile_num_editText.getText().toString();
                     defineUser(entered_number);
                 }
             }
@@ -93,7 +94,7 @@ public class login extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             user User = documentSnapshot.toObject(user.class);
 
-                            SP.edit().putString("number", User.getMobileNumber()).apply();
+
                             SP.edit().putString("line", User.getLine()).apply();
                             SP.edit().putString("type", "user").apply();
                             SP.edit().putString("name", User.getName()).apply();
@@ -122,12 +123,12 @@ public class login extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            toastMessage("Driver is found");
+
                             driver Driver = documentSnapshot.toObject(driver.class);
 
                             SP.edit().putString("number", Driver.getMobileNum()).apply();
                             SP.edit().putString("line", Driver.getLine()).apply();
-                            SP.edit().putString("type", "Driver").apply();
+                            SP.edit().putString("type", "driver").apply();
                             SP.edit().putString("name", Driver.getName()).apply();
                             SP.edit().putString("PIN", Driver.getPIN()).apply();
                             move();
@@ -146,6 +147,7 @@ public class login extends AppCompatActivity {
 
     public void move() {
         Intent i = new Intent(this, verification.class);
+        i.putExtra("number", entered_number);
         startActivity(i);
 
     }

@@ -31,7 +31,7 @@ public class driver {
         return mobileNum;
     }
 
-    public void setMobileNum(String mobileNum) {
+    public void setMobileNumber(String mobileNum) {
         this.mobileNum = mobileNum;
     }
 
