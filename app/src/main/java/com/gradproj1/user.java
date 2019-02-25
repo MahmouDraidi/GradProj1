@@ -1,31 +1,39 @@
 package com.gradproj1;
 
-import android.content.Context;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.security.PrivateKey;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.firestore.GeoPoint;
 
 public class user {
-    private Context context;
-    private String phoneNumber;
+
+    private String mobileNumber;
     private String PIN;
-    private LatLng currentLocation;
+    private GeoPoint currentLocation;
     private String name;
-    private String transportation_line;
     private String line;
 
-//
+    user() {
 
-
-    public user(Context context,String phoneNumber) {
-        FirebaseApp.initializeApp(this.context);
-        this.phoneNumber = phoneNumber;
     }
+
+    user(String mobileNumber, String name, String PIN, GeoPoint currentLocation, String line) {
+        this.mobileNumber = mobileNumber;
+        this.PIN = PIN;
+        this.currentLocation = currentLocation;
+        this.name = name;
+        this.line = line;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public String getPIN() {
+        return PIN;
+    }
+
 
     public String getLine() {
 
@@ -36,30 +44,13 @@ public class user {
         this.line = line;
     }
 
-    public void setAllInfo(String name , String phoneNumber, String PIN, LatLng currentLocation, String transportation_line){
-        this.phoneNumber = phoneNumber;
-        this.PIN = PIN;
-        this.name = name;
-        this.currentLocation = currentLocation;
-        this.transportation_line = transportation_line;
-
-    }
     // Setters Setters Setters Setters Setters Setters Setters Setters Setters
-
-    public void setPhoneNumber(FirebaseFirestore db,String mobileNumber) {
-
-        Map<String,Object> nname=new HashMap<>();
-        nname.put("some_message","Hello from the andoroooooid");
-
-        db.collection("users").document(mobileNumber).set(nname);
-        this.phoneNumber = mobileNumber;
-    }
 
     public void setPIN(String PIN) {
         this.PIN = PIN;
     }
 
-    public void setCurrentLocation(LatLng currentLocation) {
+    public void setCurrentLocation(GeoPoint currentLocation) {
         this.currentLocation = currentLocation;
     }
 
@@ -67,24 +58,15 @@ public class user {
         this.name = name;
     }
 
-
-    public void setTransportation_line(String transportation_line) {
-        this.transportation_line = transportation_line;
-    }
     //Getters Getters Getters Getters Getters Getters Getters Getters Getters
 
-    public String getPhoneNumber() {
-
-        return phoneNumber;
-    }
-
-    public String getPIN(FirebaseFirestore db,String mobileNumber) {
+    public String getPIN(String mobileNumber) {
 
 
         return PIN;
     }
 
-    public LatLng getCurrentLocation() {
+    public GeoPoint getCurrentLocation() {
         return currentLocation;
     }
 
@@ -93,8 +75,4 @@ public class user {
         return name;
     }
 
-    public String getTransportation_line() {
-
-        return transportation_line;
-    }
 }

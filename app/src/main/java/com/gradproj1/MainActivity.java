@@ -44,11 +44,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener {
 
-// todo fuck you draidi <3
-    // todo fuck you draidi <3
-    // todo fuck you draidi <3
-    // todo fuck you draidi <3
-    // todo fuck you draidi <3
+
 
 
 
@@ -74,8 +70,9 @@ public class MainActivity extends AppCompatActivity
         SP=getSharedPreferences("mobile_number", MODE_PRIVATE);
         final SharedPreferences.Editor SPE=SP.edit();
 
-        if(!SP.getString("number","").equals(""))
-        User=new user(this,SP.getString("number",""));
+        if (!SP.getString("number", "").equals("")) {
+            User = new user();
+        }
         else return;
 
 
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User.setPhoneNumber(db,"+972595403748");
+                User.setMobileNumber("+972595403748");
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
