@@ -132,7 +132,7 @@ public class verification extends AppCompatActivity {
                 startActivity(i);
                 break;
             case "driver":
-                toastMessage("HHHHHHHHHH");
+
                 i = new Intent(this, driverMap.class);
                 startActivity(i);
                 break;

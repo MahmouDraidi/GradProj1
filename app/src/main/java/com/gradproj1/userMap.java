@@ -159,8 +159,8 @@ public class userMap extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        //TODO change fixed line
-        db.collection("lines").document("Nablus - BaytLid").get()
+
+        db.collection("lines").document(User.getLine()).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -178,12 +178,9 @@ public class userMap extends AppCompatActivity
                                             return;
                                         }
                                         if (documentSnapshot.exists()) {
-
                                             mMap.clear();
-
                                             showDrivers();
                                             drawMyLoacation(false);
-
                                         }
                                     }
                                 });
@@ -325,16 +322,12 @@ public class userMap extends AppCompatActivity
                         if (documentSnapshot.exists()) {
                             User = documentSnapshot.toObject(user.class);
                             showDrivers();
-
-
                         } else {
                             toastMessage("Document not found");
-
                         }
                     }
                 });
     }
-
 
     public void showDrivers() {
         String lineOfUser = "";

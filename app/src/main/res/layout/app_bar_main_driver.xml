@@ -20,25 +20,22 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/driver_map" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="visible"
-        app:srcCompat="@android:drawable/ic_menu_add" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"
-        app:backgroundTint="@android:color/holo_red_dark"
-        app:srcCompat="@android:drawable/ic_notification_clear_all" />
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="77dp"
+        android:layout_height="37dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:background="@color/colorPrimary"
+        android:checked="false"
+        android:paddingLeft="5dp"
+        android:text="On"
+        android:textColor="@color/colorAccent"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="right|bottom" />
 
 </android.support.design.widget.CoordinatorLayout>

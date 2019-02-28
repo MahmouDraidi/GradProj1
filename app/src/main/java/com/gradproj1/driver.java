@@ -27,7 +27,7 @@ public class driver {
         this.isActive = isActive;
     }
 
-    public String getMobileNum() {
+    public String getMobileNumber() {
         return mobileNum;
     }
 

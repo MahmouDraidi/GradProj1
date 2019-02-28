@@ -1,7 +1,6 @@
 package com.gradproj1;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,31 +9,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Inflater;
 
 public class login extends AppCompatActivity {
 
@@ -60,7 +43,20 @@ public class login extends AppCompatActivity {
         //if user or driver already logged pass log in activity
         if (!SP.getString("number", "").equals("")) {
             //TODO redirect to user or driver
-            startActivity(new Intent(this, userMap.class));
+            Intent i;
+            String type = "";
+            type = SP.getString("type", "");
+            switch (type) {
+                case "user":
+                    i = new Intent(this, userMap.class);
+                    startActivity(i);
+                    break;
+                case "driver":
+
+                    i = new Intent(this, driverMap.class);
+                    startActivity(i);
+                    break;
+            }
             finish();
         }
 
@@ -75,10 +71,10 @@ public class login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (false/*mobile_num_editText.getText().toString().length() != 10*/)
+                if (mobile_num_editText.getText().toString().length() != 10)
                     toastMessage("Please enter valid number");
                 else {
-                    entered_number = /*"+97" +*/ mobile_num_editText.getText().toString();
+                    entered_number = "+97" + mobile_num_editText.getText().toString();
                     defineUser(entered_number);
                 }
             }
@@ -123,10 +119,11 @@ public class login extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
+                            toastMessage("I'm driver");
 
                             driver Driver = documentSnapshot.toObject(driver.class);
 
-                            SP.edit().putString("number", Driver.getMobileNum()).apply();
+                            SP.edit().putString("number", Driver.getMobileNumber()).apply();
                             SP.edit().putString("line", Driver.getLine()).apply();
                             SP.edit().putString("type", "driver").apply();
                             SP.edit().putString("name", Driver.getName()).apply();
