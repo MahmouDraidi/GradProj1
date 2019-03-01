@@ -1,8 +1,11 @@
 package com.gradproj1;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -25,13 +28,35 @@ public class Register extends AppCompatActivity {
     private FirebaseFirestore db;
     Location location = null;
 
+
     View view;
+
+    public Location getLocation() {
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        //LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null) {
+            @SuppressLint("MissingPermission") Location lastKnownLocationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (lastKnownLocationGPS != null) {
+                System.out.print(lastKnownLocationGPS.toString());
+                return lastKnownLocationGPS;
+            } else {
+                @SuppressLint("MissingPermission") Location loc =  locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                System.out.println("1::"+loc);
+                System.out.println("2::"+loc.getLatitude());
+                return loc;
+            }
+        } else {
+            return null;
+        }
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_number);
         layoutInflater = getLayoutInflater();
         db = FirebaseFirestore.getInstance();
+
 
     }
 
@@ -105,7 +130,7 @@ public class Register extends AppCompatActivity {
 
             Map<String, Object> newDriver = new HashMap<>();
             // TODO put correct position
-            newDriver.put("currentLocation", new GeoPoint(3.2, 2.1));
+            newDriver.put("currentLocation", new GeoPoint(getLocation().getLatitude(), getLocation().getLongitude()));
             newDriver.put("isActive", true);
             newDriver.put("line", Line.getText().toString());
             newDriver.put("mobileNumber", "+97" + mobileNumber.getText().toString());
