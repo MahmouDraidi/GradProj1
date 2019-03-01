@@ -79,7 +79,7 @@ public class Register extends AppCompatActivity {
 
             Map<String, Object> newUser = new HashMap<>();
             // TODO put correct position
-            newUser.put("currentLocation", new GeoPoint(3.1, 2.1));
+            newUser.put("currentLocation", new GeoPoint(getLocation().getLatitude(), getLocation().getLongitude()));
             newUser.put("line", Line.getText().toString());
             newUser.put("mobileNumber", "+97" + mobileNumber.getText().toString());
             newUser.put("name", fName.getText().toString() + " " + sName.getText().toString() + " " + lName.getText().toString());
