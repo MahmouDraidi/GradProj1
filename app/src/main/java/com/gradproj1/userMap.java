@@ -3,17 +3,15 @@ package com.gradproj1;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -43,13 +41,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.driver.DriversListActivity;
+import com.gradproj1.driver.driver;
 
 
 import java.util.ArrayList;
@@ -77,6 +76,9 @@ public class userMap extends AppCompatActivity
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
     public static int reserved = 0;
+    Fragment fragment = null;
+    FragmentManager fragmentManager;
+    final List<String> driversNames = new ArrayList<String>();
 
 
     @Override
@@ -92,6 +94,7 @@ public class userMap extends AppCompatActivity
         polylines = new ArrayList<>();
         User = new user();
         initUser();
+        fragmentManager = getSupportFragmentManager();
 
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -147,6 +150,7 @@ public class userMap extends AppCompatActivity
         location();
 
 
+
     }
 
     private void initUser() {
@@ -154,6 +158,7 @@ public class userMap extends AppCompatActivity
         User.setMobileNumber(SP.getString("number", ""));
         User.setName(SP.getString("name", ""));
         User.setPIN(SP.getString("PIN", ""));
+        User.setCurrentLocation(new GeoPoint(getLastKnownLocation().getLatitude(), getLastKnownLocation().getLongitude()));
     }
 
     @Override
@@ -188,6 +193,7 @@ public class userMap extends AppCompatActivity
                         } else toastMessage("Failed to find drivers");
                     }
                 });
+        //getDriversNames();
 
 
     }
@@ -219,12 +225,45 @@ public class userMap extends AppCompatActivity
         return bestLocation;
     }
 
+    public List<String> getDriversNames() {
+
+        db.collection("lines").document(SP.getString("line", "")).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+
+                            line Line = documentSnapshot.toObject(line.class);
+                            List<String> dID = Line.getActiveDrivers();
+                            dID.addAll(Line.getNonActiveDrivers());
+                            for (String S : dID) {
+                                db.collection("drivers").document(S).get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                driversNames.add(documentSnapshot.toObject(driver.class).getName());
+                                                //toastMessage(documentSnapshot.toObject(driver.class).getName());
+                                            }
+                                        });
+                            }
+
+
+                        }
+                    }
+                });
+        toastMessage("Retreived");
+        return driversNames;
+    }
+
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commit();
+            fragment = null;
         } else {
             super.onBackPressed();
         }
@@ -257,23 +296,23 @@ public class userMap extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.driversList) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            startActivity(new Intent(this, DriversListActivity.class));
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_drivers) {
 
-        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_lines) {
+
+        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_sign_out) {
 
             SharedPreferences SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
-            SharedPreferences.Editor SPE = SP.edit();
-            SPE.clear();
-            SPE.apply();
-
+            SP.edit().clear().apply();
             startActivity(new Intent(this, login.class));
             finish();
 
@@ -472,4 +511,5 @@ public class userMap extends AppCompatActivity
     public void onRoutingCancelled() {
 
     }
+
 }

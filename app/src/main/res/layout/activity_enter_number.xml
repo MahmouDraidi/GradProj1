@@ -28,7 +28,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="92dp"
-        android:text="00970"
+        android:text="0097"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/checkNumButton"

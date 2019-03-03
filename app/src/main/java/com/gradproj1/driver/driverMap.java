@@ -1,15 +1,13 @@
-package com.gradproj1;
+package com.gradproj1.driver;
 
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 
 import android.util.Log;
 import android.view.View;
@@ -36,20 +34,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.auth.User;
+import com.gradproj1.R;
+import com.gradproj1.line;
+import com.gradproj1.login;
+import com.gradproj1.user;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -237,9 +235,10 @@ public class driverMap extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.driversList) {
+            startActivity(new Intent(this, DriversListActivity.class));
+
+        } else if (id == R.id.x) {
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -315,6 +314,7 @@ public class driverMap extends AppCompatActivity
         Driver.setName(SP.getString("name", ""));
         Driver.setPIN(SP.getString("PIN", ""));
         Driver.setLine(SP.getString("line", ""));
+
     }
 
     public void showPassengers() {

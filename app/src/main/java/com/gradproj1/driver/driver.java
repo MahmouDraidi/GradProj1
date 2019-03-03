@@ -1,4 +1,4 @@
-package com.gradproj1;
+package com.gradproj1.driver;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;

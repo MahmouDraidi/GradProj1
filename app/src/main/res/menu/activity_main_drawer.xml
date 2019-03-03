@@ -5,11 +5,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_drivers"
             android:icon="@drawable/ic_local_taxi_black_24dp"
             android:title="Drivers" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_lines"
             android:icon="@drawable/ic_transform_black_24dp"
             android:title="Lines" />
         <item
@@ -17,7 +17,7 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Slideshow" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"
             android:title="Share" />
     </group>
