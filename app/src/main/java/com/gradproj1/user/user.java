@@ -1,4 +1,4 @@
-package com.gradproj1;
+package com.gradproj1.user;
 
 import com.google.firebase.firestore.GeoPoint;
 

@@ -1,6 +1,7 @@
 package com.gradproj1;
 
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.user.user;
 
 import java.util.List;
 import java.util.Map;

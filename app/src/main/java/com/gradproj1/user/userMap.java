@@ -1,4 +1,4 @@
-package com.gradproj1;
+package com.gradproj1.user;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -47,8 +47,11 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.R;
 import com.gradproj1.driver.DriversListActivity;
 import com.gradproj1.driver.driver;
+import com.gradproj1.line;
+import com.gradproj1.login;
 
 
 import java.util.ArrayList;

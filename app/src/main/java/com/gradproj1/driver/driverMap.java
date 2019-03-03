@@ -46,7 +46,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.R;
 import com.gradproj1.line;
 import com.gradproj1.login;
-import com.gradproj1.user;
+import com.gradproj1.user.user;
 
 import java.util.ArrayList;
 import java.util.List;

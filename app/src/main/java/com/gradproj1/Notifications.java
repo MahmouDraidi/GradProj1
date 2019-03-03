@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.gradproj1;
 
 import android.app.Notification;
@@ -52,7 +52,7 @@ public class Notifications extends FirebaseMessagingService {
         notificationManager.notify(new Random().nextInt(), builder.build());
     }
 
-=======
+
 package com.gradproj1;
 
 import android.app.Notification;
