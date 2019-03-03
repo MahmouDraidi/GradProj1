@@ -18,12 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".driver.DriversListActivity"></activity>
-        <activity android:name=".registeration" />
+        <activity android:name=".registeration"></activity>
         <activity
             android:name=".login"
-            android:configChanges="orientation|screenSize"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,10 +50,15 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".driver.driverMap"
+            android:name=".driverMap"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Register" />
-    </application>
+        <activity android:name=".Register"/>
+        <service android:name=".Notifications">
+<intent-filter>
+    <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+</intent-filter>
+        </service>
+        </application>
 
 </manifest>
