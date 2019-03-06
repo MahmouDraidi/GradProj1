@@ -10,6 +10,16 @@ public class user {
     private String name;
     private String line;
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    boolean isActive;
+
     user() {
 
     }

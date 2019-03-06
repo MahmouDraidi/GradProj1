@@ -299,7 +299,7 @@ public class userMap extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.driversList) {
+        if (id == R.id.nav_drivers) {
             // Handle the camera action
             startActivity(new Intent(this, DriversListActivity.class));
 

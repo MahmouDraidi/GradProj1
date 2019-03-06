@@ -7,8 +7,19 @@
     tools:context=".driver.DriversListActivity">
 
 
+    <EditText
+        android:id="@+id/searchDriverTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="Search any driver"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:drawableStart="@android:drawable/ic_menu_search" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
+        android:layout_below="@+id/searchDriverTV"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>

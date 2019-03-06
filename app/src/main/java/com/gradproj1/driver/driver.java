@@ -3,6 +3,9 @@ package com.gradproj1.driver;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.user.user;
+
+import java.util.Map;
 
 public class driver {
     private String mobileNum;
@@ -13,6 +16,8 @@ public class driver {
     private String line;
     private boolean isActive;
     Marker driverMarker;
+
+    Map<String, user> passengers;
 
     public driver() {
     }
@@ -27,8 +32,20 @@ public class driver {
         this.isActive = isActive;
     }
 
+    public void setMobileNum(String mobileNum) {
+        this.mobileNum = mobileNum;
+    }
+
     public String getMobileNumber() {
         return mobileNum;
+    }
+
+    public Map<String, user> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(Map<String, user> passengers) {
+        this.passengers = passengers;
     }
 
     public void setMobileNumber(String mobileNum) {

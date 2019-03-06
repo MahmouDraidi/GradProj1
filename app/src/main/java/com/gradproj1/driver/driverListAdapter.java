@@ -1,17 +1,21 @@
 package com.gradproj1.driver;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.gradproj1.R;
 
+
 public class driverListAdapter extends FirestoreRecyclerAdapter<driver, driverListAdapter.driverHolder> {
+
 
     public driverListAdapter(@NonNull FirestoreRecyclerOptions<driver> options) {
         super(options);
@@ -23,6 +27,11 @@ public class driverListAdapter extends FirestoreRecyclerAdapter<driver, driverLi
         holder.nameTV.setText(model.getName());
         holder.directionTV.setText(model.getLine());
         holder.passengersNum.setText(model.getPIN());
+        if (model.isActive()) {
+            holder.nameTV.setTextColor(Color.parseColor("#FF9800"));
+        } else holder.nameTV.setTextColor(Color.GRAY);
+
+
     }
 
     @NonNull
@@ -45,4 +54,17 @@ public class driverListAdapter extends FirestoreRecyclerAdapter<driver, driverLi
             passengersNum = itemView.findViewById(R.id.numOfPassengers);
         }
     }
+    /*
+    private Filter driverListFilter =new Filter(){
+
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            return null;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+
+        }
+    };*/
 }

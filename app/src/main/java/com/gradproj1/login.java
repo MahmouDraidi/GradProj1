@@ -46,7 +46,7 @@ public class login extends AppCompatActivity {
 
         //if user or driver already logged pass log in activity
         if (!SP.getString("number", "").equals("")) {
-            //TODO redirect to user or driver
+
             Intent i;
             String type = "";
             type = SP.getString("type", "");
