@@ -3,6 +3,7 @@ package com.gradproj1.driver;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +20,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,11 +44,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.R;
-import com.gradproj1.line;
+import com.gradproj1.line.line;
+import com.gradproj1.line.linesList;
 import com.gradproj1.login;
 import com.gradproj1.user.user;
 
@@ -68,20 +74,27 @@ public class driverMap extends AppCompatActivity
     line myLine;
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
+    private Switch activatingSwitch;
+    boolean isActive = false;
+    static boolean garageView = true;
+    ImageView garage_switch;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_driver);
+        activatingSwitch = (Switch) findViewById(R.id.acivateDriverSwitch);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         db = FirebaseFirestore.getInstance();
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
         driverMobileNumber = SP.getString("number", "");
         polylines = new ArrayList<>();
-        Log.d("liiiiine--->", SP.getString("line", ""));
         Driver = new driver();
+        initDriver();
+        isActive = getIsDriverActive();
+        garage_switch = (ImageView) findViewById(R.id.garage_switch);
 
 
 //        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -97,6 +110,34 @@ public class driverMap extends AppCompatActivity
 //
 //            }
 //        });
+        activatingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (activatingSwitch.isChecked()) {
+                    updateIsActive(true);
+                    activatingSwitchStatus(true);
+                    isActive = true;
+                    setListeners();
+                    showDrivers();
+                    showPassengers();
+                    location();
+
+                } else {
+                    isActive = false;
+                    updateIsActive(false);
+                    activatingSwitchStatus(false);
+                    mMap.clear();
+
+                }
+            }
+        });
+        garage_switch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isActive) switchBetweenGarages();
+
+            }
+        });
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -107,7 +148,6 @@ public class driverMap extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        initDriver();
         View menuHeaderView = navigationView.getHeaderView(0);
         ((TextView) (menuHeaderView.findViewById(R.id.myNameView))).setText(Driver.getName());
         ((TextView) (menuHeaderView.findViewById(R.id.myLineView))).setText(Driver.getLine());
@@ -118,14 +158,81 @@ public class driverMap extends AppCompatActivity
                 .findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
 
-        location();
 
+    }
 
+    public void switchBetweenGarages() {
+        if (garageView) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLine.getGarage1().getLatitude(), myLine.getGarage1().getLongitude()), 15f));
+            garageView = false;
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLine.getGarage2().getLatitude(), myLine.getGarage2().getLongitude()), 15f));
+            garageView = true;
+        }
+    }
+
+    private void updateIsActive(boolean newStatus) {
+        db.collection("drivers").document(driverMobileNumber).update("active", newStatus);
+        if (newStatus) {
+            db.collection("lines").document(Driver.getLine()).update("activeDrivers", FieldValue.arrayUnion(Driver.getMobileNumber()));
+            db.collection("lines").document(Driver.getLine()).update("nonActiveDrivers", FieldValue.arrayRemove(Driver.getMobileNumber()));
+        } else {
+            db.collection("lines").document(Driver.getLine()).update("activeDrivers", FieldValue.arrayRemove(Driver.getMobileNumber()));
+            db.collection("lines").document(Driver.getLine()).update("nonActiveDrivers", FieldValue.arrayUnion(Driver.getMobileNumber()));
+
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        db.collection("lines").document(SP.getString("line", "")).get()
+                .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        if (documentSnapshot.exists()) {
+                            myLine = documentSnapshot.toObject(line.class);
+                            List<String> active_drivers = myLine.getActiveDrivers();
+
+                            for (String driverID : active_drivers) {
+                                db.collection("drivers").document(driverID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                        if (e != null) {
+                                            toastMessage("Failed to load drivers");
+                                            return;
+                                        }
+                                        if (documentSnapshot.exists()) {
+                                            if (isActive) {
+                                                mMap.clear();
+                                                showDrivers();
+                                                drawMyLoacation(false);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        } else toastMessage("Failed to find drivers");
+                    }
+                });
+
+
+    }
+
+    public void activatingSwitchStatus(boolean b) {
+        if (b) {
+            activatingSwitch.setChecked(true);
+            activatingSwitch.setText("On");
+            activatingSwitch.setTextColor(Color.parseColor("#FF9800"));
+        } else {
+            activatingSwitch.setChecked(false);
+            activatingSwitch.setText("off");
+            activatingSwitch.setTextColor(Color.GRAY);
+        }
+    }
+
+    public void setListeners() {
 
         db.collection("lines").document(Driver.getLine()).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
@@ -137,7 +244,7 @@ public class driverMap extends AppCompatActivity
                             Map<String, user> active_users = myLine.getActiveUsers();
 
                             for (String userID : active_users.keySet()) {
-                                db.collection("drivers").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                db.collection("users").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                                         if (e != null) {
@@ -145,13 +252,16 @@ public class driverMap extends AppCompatActivity
                                             return;
                                         }
                                         if (documentSnapshot.exists()) {
-
-                                            mMap.clear();
-                                            showPassengers();
-                                            drawMyLoacation(false);
+                                            if (isActive) {
+                                                mMap.clear();
+                                                showPassengers();
+                                                showDrivers();
+                                                drawMyLoacation(false);
+                                            }
                                         }
                                     }
                                 });
+
                             }
                         } else toastMessage("Failed to find drivers");
                     }
@@ -160,20 +270,41 @@ public class driverMap extends AppCompatActivity
         db.collection("lines").document(Driver.getLine()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                mMap.clear();
-                showPassengers();
-                drawMyLoacation(false);
-                showDrivers();
+                if (isActive) {
+                    mMap.clear();
+                    showPassengers();
+                    drawMyLoacation(false);
+                    showDrivers();
+                }
             }
         });
-
-
     }
 
     public void toastMessage(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
 
 
+    }
+
+    public boolean getIsDriverActive() {
+
+        db.collection("drivers").document(Driver.getMobileNumber()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.toObject(driver.class).isActive()) {
+                            isActive = true;
+                            drawMyLoacation(true);
+                            setListeners();
+                            showDrivers();
+                            location();
+                            activatingSwitchStatus(true);
+
+
+                        } else isActive = false;
+                    }
+                });
+        return isActive;
     }
 
 
@@ -238,7 +369,8 @@ public class driverMap extends AppCompatActivity
         if (id == R.id.driversList) {
             startActivity(new Intent(this, DriversListActivity.class));
 
-        } else if (id == R.id.x) {
+        } else if (id == R.id.driver_linesList) {
+            startActivity(new Intent(this, linesList.class));
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -281,32 +413,11 @@ public class driverMap extends AppCompatActivity
         mMap.setMyLocationEnabled(true);
 
 
-        getDriver();
-
-        drawMyLoacation(true);
         //buildLineRoute();
 
     }
 
-    //get all driver info in instance from DB
-    public void getDriver() {
 
-        db.collection("drivers").document(Driver.getMobileNumber()).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                        if (documentSnapshot.exists()) {
-                            Driver = documentSnapshot.toObject(driver.class);
-                            showDrivers();
-
-                        } else {
-                            toastMessage("Document not found");
-
-                        }
-                    }
-                });
-    }
 
     private void initDriver() {
 
@@ -340,11 +451,9 @@ public class driverMap extends AppCompatActivity
     }
 
     public void showDrivers() {
-        String lineOfDriver = "";
-        lineOfDriver = Driver.getLine();
 
 
-        db.collection("lines").document(lineOfDriver).get()
+        db.collection("lines").document(SP.getString("line", "")).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -364,10 +473,14 @@ public class driverMap extends AppCompatActivity
                                                     LatLng loc = new LatLng(GP.getLatitude(), GP.getLongitude());
                                                     mMap
                                                             .addMarker(new MarkerOptions().position(loc).title(dr.getName())
-                                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
+                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
                                                 }
                                             }
                                         });
+                                mMap.addMarker(new MarkerOptions().position(new LatLng(myLine.getGarage1().getLatitude(), myLine.getGarage1().getLongitude()))
+                                        .title(myLine.getGarage1Discription()).zIndex(10));
+                                mMap.addMarker(new MarkerOptions().position(new LatLng(myLine.getGarage2().getLatitude(), myLine.getGarage2().getLongitude()))
+                                        .title(myLine.getGarage2Discription()).zIndex(10));
                             }
                         } else toastMessage("Failed to find drivers");
                     }
@@ -404,6 +517,7 @@ public class driverMap extends AppCompatActivity
                 toastMessage(location.toString());
             }
 
+            //TODO upload driver location
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
 
@@ -422,6 +536,7 @@ public class driverMap extends AppCompatActivity
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, locationListener);
+
 
     }
 

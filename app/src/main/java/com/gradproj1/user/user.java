@@ -9,14 +9,8 @@ public class user {
     private GeoPoint currentLocation;
     private String name;
     private String line;
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
+    private String myDriver;
+    private String myPositionDiscripition;
 
     boolean isActive;
 
@@ -30,6 +24,22 @@ public class user {
         this.currentLocation = currentLocation;
         this.name = name;
         this.line = line;
+    }
+
+    public String getMyDriver() {
+        return myDriver;
+    }
+
+    public void setMyDriver(String myDriver) {
+        this.myDriver = myDriver;
+    }
+
+    public String getMyPositionDiscripition() {
+        return myPositionDiscripition;
+    }
+
+    public void setMyPositionDiscripition(String myPositionDiscripition) {
+        this.myPositionDiscripition = myPositionDiscripition;
     }
 
     public String getMobileNumber() {
@@ -52,6 +62,14 @@ public class user {
 
     public void setLine(String line) {
         this.line = line;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     // Setters Setters Setters Setters Setters Setters Setters Setters Setters

@@ -9,7 +9,7 @@
             android:icon="@drawable/ic_local_taxi_black_24dp"
             android:title="Drivers" />
         <item
-            android:id="@+id/x"
+            android:id="@+id/driver_linesList"
             android:icon="@drawable/ic_transform_black_24dp"
             android:title="Lines" />
         <item

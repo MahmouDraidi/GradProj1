@@ -7,10 +7,10 @@
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="@color/common_google_signin_btn_text_dark_pressed">
+    app:cardBackgroundColor="@color/colorPrimary">
 
     <RelativeLayout
-        android:id="@+id/driverListRelLayout"
+        android:id="@+id/userListRelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -26,7 +26,7 @@
             app:civ_border_width="2dp" />
 
         <TextView
-            android:id="@+id/driverNameTV"
+            android:id="@+id/list_userNameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -39,37 +39,48 @@
             android:textColor="@android:color/white" />
 
         <TextView
-            android:id="@+id/driverDirectionTV"
+            android:id="@+id/userMobNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/driverNameTV"
+            android:layout_below="@id/list_userNameTV"
             android:layout_toEndOf="@id/userImage"
             android:ellipsize="end"
-            android:text="From nablus to baytlid "
+            android:text="0595403748"
             android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 
         <TextView
-            android:id="@+id/numOfPassengers"
+            android:id="@+id/list_mob_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/driverDirectionTV"
+            android:layout_below="@id/userMobNum"
             android:layout_toEndOf="@id/userImage"
-            android:ellipsize="end"
-            android:text="Passengers: 5"
+            android:text="Reservations: 5"
             android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 
-
         <ImageView
-            android:id="@+id/messageDriverIcon"
+            android:id="@+id/numOfReservations"
             android:layout_width="35dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_message_black_24dp" />
+
+        <TextView
+            android:id="@+id/posDiscription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/list_mob_num"
+            android:layout_toEndOf="@id/userImage"
+            android:text="Description: "
+            android:textAlignment="viewStart"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textColor="@android:color/darker_gray" />
+
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

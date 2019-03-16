@@ -15,9 +15,12 @@ public class driver {
     private String PIN;
     private String line;
     private boolean isActive;
-    Marker driverMarker;
+    private int passengersNum;
+    private int maxPassengersNum;
 
-    Map<String, user> passengers;
+    Map<String, user> myPassengers;
+
+
 
     public driver() {
     }
@@ -32,6 +35,34 @@ public class driver {
         this.isActive = isActive;
     }
 
+    public String getMobileNum() {
+        return mobileNum;
+    }
+
+    public Map<String, user> getMyPassengers() {
+        return myPassengers;
+    }
+
+    public void setMyPassengers(Map<String, user> myPassengers) {
+        this.myPassengers = myPassengers;
+    }
+
+    public int getMaxPassengersNum() {
+        return maxPassengersNum;
+    }
+
+    public void setMaxPassengersNum(int maxPassengersNum) {
+        this.maxPassengersNum = maxPassengersNum;
+    }
+
+    public int getPassengersNum() {
+        return passengersNum;
+    }
+
+    public void setPassengersNum(int passengersNum) {
+        this.passengersNum = passengersNum;
+    }
+
     public void setMobileNum(String mobileNum) {
         this.mobileNum = mobileNum;
     }
@@ -40,13 +71,6 @@ public class driver {
         return mobileNum;
     }
 
-    public Map<String, user> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(Map<String, user> passengers) {
-        this.passengers = passengers;
-    }
 
     public void setMobileNumber(String mobileNum) {
         this.mobileNum = mobileNum;

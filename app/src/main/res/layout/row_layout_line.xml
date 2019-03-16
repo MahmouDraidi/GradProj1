@@ -7,69 +7,58 @@
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="@color/common_google_signin_btn_text_dark_pressed">
+    app:cardBackgroundColor="@color/colorPrimary">
 
     <RelativeLayout
-        android:id="@+id/driverListRelLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/lineListRelLayout">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/userImage"
+            android:id="@+id/lineImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:src="@drawable/ic_launcher_background"
+            app:civ_border_width="2dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:src="@drawable/ic_launcher_background"
-            app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
+            app:civ_border_color="#FF000000" />
 
         <TextView
-            android:id="@+id/driverNameTV"
+            android:id="@+id/lineName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/lineImage"
             android:layout_toStartOf="@id/messageDriverIcon"
-            android:layout_toEndOf="@id/userImage"
-            android:ellipsize="end"
-            android:text="محمودسمير دريدي"
-            android:textAlignment="viewStart"
+            android:text="Mahmoud Sameer Draidi "
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/driverDirectionTV"
+            android:id="@+id/lineActiveDrivers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/driverNameTV"
-            android:layout_toEndOf="@id/userImage"
-            android:ellipsize="end"
+            android:layout_below="@id/lineName"
+            android:layout_toEndOf="@id/lineImage"
             android:text="From nablus to baytlid "
-            android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/numOfPassengers"
+            android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/driverDirectionTV"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_below="@id/lineActiveDrivers"
+            android:layout_toEndOf="@id/lineImage"
             android:ellipsize="end"
             android:text="Passengers: 5"
-            android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 
-
-        <ImageView
-            android:id="@+id/messageDriverIcon"
-            android:layout_width="35dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_message_black_24dp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

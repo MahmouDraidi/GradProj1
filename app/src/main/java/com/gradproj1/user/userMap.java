@@ -50,7 +50,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.R;
 import com.gradproj1.driver.DriversListActivity;
 import com.gradproj1.driver.driver;
-import com.gradproj1.line;
+import com.gradproj1.line.line;
 import com.gradproj1.login;
 
 
@@ -96,7 +96,6 @@ public class userMap extends AppCompatActivity
         userMobileNumber = SP.getString("number", "");
         polylines = new ArrayList<>();
         User = new user();
-        initUser();
         fragmentManager = getSupportFragmentManager();
 
 
@@ -156,19 +155,12 @@ public class userMap extends AppCompatActivity
 
     }
 
-    private void initUser() {
-        User.setLine(SP.getString("line", ""));
-        User.setMobileNumber(SP.getString("number", ""));
-        User.setName(SP.getString("name", ""));
-        User.setPIN(SP.getString("PIN", ""));
-        User.setCurrentLocation(new GeoPoint(getLastKnownLocation().getLatitude(), getLastKnownLocation().getLongitude()));
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        db.collection("lines").document(User.getLine()).get()
+        db.collection("lines").document(SP.getString("line", "")).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -346,37 +338,20 @@ public class userMap extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
-        getUser();
 
         drawMyLoacation(true);
         //buildLineRoute();
 
     }
 
-    //get all user info in instance from DB
-    public void getUser() {
 
-        db.collection("users").document(User.getMobileNumber()).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                        if (documentSnapshot.exists()) {
-                            User = documentSnapshot.toObject(user.class);
-                            showDrivers();
-                        } else {
-                            toastMessage("Document not found");
-                        }
-                    }
-                });
-    }
 
     public void showDrivers() {
         String lineOfUser = "";
         lineOfUser = User.getLine();
 
 
-        db.collection("lines").document(lineOfUser).get()
+        db.collection("lines").document(SP.getString("line", "")).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {

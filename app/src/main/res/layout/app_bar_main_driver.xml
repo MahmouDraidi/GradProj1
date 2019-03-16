@@ -24,18 +24,43 @@
         android:id="@+id/include"
         layout="@layout/driver_map" />
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="77dp"
-        android:layout_height="37dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@color/colorPrimary"
-        android:checked="false"
-        android:paddingLeft="5dp"
-        android:text="On"
-        android:textColor="@color/colorAccent"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="216dp"
+        android:gravity="end"
+        android:orientation="vertical"
         app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="right|bottom" />
+        app:layout_anchorGravity="right|bottom">
+
+        <Switch
+            android:id="@+id/acivateDriverSwitch"
+
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/oval"
+            android:checked="false"
+            android:paddingLeft="5dp"
+            android:text="off"
+            android:textAlignment="center"
+            android:textColor="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/myPassengersButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/oval"
+            android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/garage_switch"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/oval"
+            app:srcCompat="@drawable/switch_garage_24dp" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

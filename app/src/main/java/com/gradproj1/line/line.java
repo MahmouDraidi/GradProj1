@@ -1,4 +1,4 @@
-package com.gradproj1;
+package com.gradproj1.line;
 
 import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.user.user;
@@ -13,8 +13,19 @@ public class line {
     private List<String> activeDrivers;
     private List<String> nonActiveDrivers;
     private Map<String, user> activeUsers;
+    private String garage1Discription;
 
+    private String garage2Discription;
 
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    private String price;
 
 
 
@@ -28,6 +39,23 @@ public class line {
         this.activeDrivers = activeDrivers;
         this.nonActiveDrivers = nonActiveDrivers;
         this.activeUsers = activeUsers;
+
+    }
+
+    public String getGarage1Discription() {
+        return garage1Discription;
+    }
+
+    public void setGarage1Discription(String garage1Discription) {
+        this.garage1Discription = garage1Discription;
+    }
+
+    public String getGarage2Discription() {
+        return garage2Discription;
+    }
+
+    public void setGarage2Discription(String garage2Discription) {
+        this.garage2Discription = garage2Discription;
     }
 
     public GeoPoint getGarage1() {
