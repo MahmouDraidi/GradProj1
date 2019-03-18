@@ -1,6 +1,9 @@
 package com.gradproj1.user;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -21,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,28 +40,25 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.R;
+import com.gradproj1.Reservation;
 import com.gradproj1.driver.DriversListActivity;
 import com.gradproj1.driver.driver;
 import com.gradproj1.line.line;
 import com.gradproj1.login;
-
+import com.gradproj1.reservationPopup;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -66,22 +67,19 @@ public class userMap extends AppCompatActivity
 
 
     private GoogleMap mMap;
-    private boolean mPermissionDenied = false;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    LocationManager locationManager;
-    LocationListener locationListener;
-    Marker marker;
-    user User;
-    String userMobileNumber;
-    FirebaseFirestore db;
-    SharedPreferences SP;
-    line myLine;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private user User;
+    private FirebaseFirestore db;
+    private SharedPreferences SP;
+    private line myLine;
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
-    public static int reserved = 0;
-    Fragment fragment = null;
-    FragmentManager fragmentManager;
-    final List<String> driversNames = new ArrayList<String>();
+    private Fragment fragment = null;
+    private FragmentManager fragmentManager;
+    private final List<String> driversNames = new ArrayList<String>();
+    private Button reqButton;
+    Reservation res;
 
 
     @Override
@@ -90,43 +88,43 @@ public class userMap extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        reqButton = findViewById(R.id.requestButton);
         db = FirebaseFirestore.getInstance();
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
         final SharedPreferences.Editor SPE = SP.edit();
-        userMobileNumber = SP.getString("number", "");
         polylines = new ArrayList<>();
-        User = new user();
+        initUser();
         fragmentManager = getSupportFragmentManager();
 
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-
-            @SuppressLint("RestrictedApi")
-            public void onClick(final View view) {
-               /* mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));*/
-                //buildLineRoute();
-                fab.setVisibility(View.GONE);
-                fab2.setVisibility(View.VISIBLE);
-                Map<String, user> usObj = new HashMap<>();
-                usObj.put(User.getMobileNumber(), User);
-                db.collection("lines").document(User.getLine()).update("activeUsers." + User.getMobileNumber(), User);
-//
-
-
-            }
-        });
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
+        reqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fab2.setVisibility(View.GONE);
-                fab.setVisibility(View.VISIBLE);
-                db.collection("lines").document(User.getLine()).update("activeUsers." + User.getMobileNumber(), FieldValue.delete());
-//
+                boolean userHasReservation = false;
+
+                db.collection("reservations").document(User.getMobileNumber()).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    res = documentSnapshot.toObject(Reservation.class);
+                                    if (res.getReservationDriver().equals("none")) {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(userMap.this);
+                                        builder.setMessage("لقد قمت بالطلب مسبقا,هل تود حذف الطلب؟");
+                                        builder.setPositiveButton("حذف الطلب", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                db.collection("reservations").document(User.getMobileNumber()).delete();
+                                            }
+                                        })
+                                                .setNegativeButton("إلغاء", null);
+                                        AlertDialog alert = builder.create();
+                                        alert.show();
+
+                                    }
+                                } else showPopup();
+                            }
+                        });
             }
         });
 
@@ -155,6 +153,21 @@ public class userMap extends AppCompatActivity
 
     }
 
+    private void initUser() {
+        User = new user();
+        User.setMobileNumber(SP.getString("number", ""));
+        User.setName(SP.getString("name", ""));
+        User.setLine(SP.getString("line", ""));
+        User.setPIN(SP.getString("PIN", ""));
+
+    }
+
+    public void showPopup() {
+
+        Intent i = new Intent(this, reservationPopup.class);
+        startActivity(i);
+    }
+
 
     @Override
     protected void onStart() {
@@ -168,6 +181,7 @@ public class userMap extends AppCompatActivity
                         if (documentSnapshot.exists()) {
                             myLine = documentSnapshot.toObject(line.class);
                             List<String> active_drivers = myLine.getActiveDrivers();
+
 
                             for (String driverID : active_drivers) {
                                 db.collection("drivers").document(driverID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -410,6 +424,7 @@ public class userMap extends AppCompatActivity
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                //TODO update location for user
 
                 toastMessage(location.toString());
             }

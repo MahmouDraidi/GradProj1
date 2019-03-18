@@ -1,6 +1,7 @@
 package com.gradproj1.line;
 
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.Reservation;
 import com.gradproj1.user.user;
 
 import java.util.List;
@@ -13,6 +14,9 @@ public class line {
     private List<String> activeDrivers;
     private List<String> nonActiveDrivers;
     private Map<String, user> activeUsers;
+
+    private Map<String, Reservation> reservation;
+
     private String garage1Discription;
 
     private String garage2Discription;
@@ -40,6 +44,14 @@ public class line {
         this.nonActiveDrivers = nonActiveDrivers;
         this.activeUsers = activeUsers;
 
+    }
+
+    public Map<String, Reservation> getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Map<String, Reservation> reservation) {
+        this.reservation = reservation;
     }
 
     public String getGarage1Discription() {

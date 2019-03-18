@@ -52,6 +52,7 @@ import com.gradproj1.R;
 import com.gradproj1.line.line;
 import com.gradproj1.line.linesList;
 import com.gradproj1.login;
+import com.gradproj1.user.ReservationsList;
 import com.gradproj1.user.user;
 
 import java.util.ArrayList;
@@ -207,6 +208,7 @@ public class driverMap extends AppCompatActivity
                                             if (isActive) {
                                                 mMap.clear();
                                                 showDrivers();
+                                                showPassengers();
                                                 drawMyLoacation(false);
                                             }
                                         }
@@ -234,7 +236,7 @@ public class driverMap extends AppCompatActivity
 
     public void setListeners() {
 
-        db.collection("lines").document(Driver.getLine()).get()
+       /* db.collection("lines").document(Driver.getLine()).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -265,7 +267,7 @@ public class driverMap extends AppCompatActivity
                             }
                         } else toastMessage("Failed to find drivers");
                     }
-                });
+                });*/
         //when new user is active redraw map
         db.collection("lines").document(Driver.getLine()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -372,7 +374,9 @@ public class driverMap extends AppCompatActivity
         } else if (id == R.id.driver_linesList) {
             startActivity(new Intent(this, linesList.class));
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.driver_reservationList) {
+            startActivity(new Intent(this, ReservationsList.class));
+
 
         } else if (id == R.id.nav_manage) {
 
@@ -430,7 +434,7 @@ public class driverMap extends AppCompatActivity
 
     public void showPassengers() {
 
-        db.collection("lines").document(Driver.getLine()).get()
+       /* db.collection("lines").document(Driver.getLine()).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -447,7 +451,7 @@ public class driverMap extends AppCompatActivity
                             }
                         }
                     }
-                });
+                });*/
     }
 
     public void showDrivers() {

@@ -7,15 +7,15 @@
         <item
             android:id="@+id/driversList"
             android:icon="@drawable/ic_local_taxi_black_24dp"
-            android:title="Drivers" />
+            android:title="السائقين" />
         <item
             android:id="@+id/driver_linesList"
             android:icon="@drawable/ic_transform_black_24dp"
-            android:title="Lines" />
+            android:title="الخطوط" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/driver_reservationList"
+            android:icon="@drawable/ic_transfer_within_a_station_black_24dp"
+            android:title="حجوزات الركاب" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_share"

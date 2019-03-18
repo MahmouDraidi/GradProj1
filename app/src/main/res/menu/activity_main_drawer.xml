@@ -7,14 +7,14 @@
         <item
             android:id="@+id/nav_drivers"
             android:icon="@drawable/ic_local_taxi_black_24dp"
-            android:title="Drivers" />
+            android:title="السائقين" />
         <item
             android:id="@+id/nav_lines"
             android:icon="@drawable/ic_transform_black_24dp"
-            android:title="Lines" />
+            android:title="الخطوط" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_transfer_within_a_station_black_24dp"
             android:title="Slideshow" />
         <item
             android:id="@+id/nav_share"
@@ -27,11 +27,11 @@
             <item
                 android:id="@+id/nav_setting"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="Setting" />
+                android:title="إعدادات" />
             <item
                 android:id="@+id/nav_sign_out"
                 android:icon="@drawable/ic_directions_run_black_24dp"
-                android:title="Sign out" />
+                android:title="خروج" />
         </menu>
     </item>
 

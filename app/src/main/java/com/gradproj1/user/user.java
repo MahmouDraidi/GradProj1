@@ -9,16 +9,13 @@ public class user {
     private GeoPoint currentLocation;
     private String name;
     private String line;
-    private String myDriver;
-    private String myPositionDiscripition;
+    private boolean isActive;
 
-    boolean isActive;
-
-    user() {
+    public user() {
 
     }
 
-    user(String mobileNumber, String name, String PIN, GeoPoint currentLocation, String line) {
+    public user(String mobileNumber, String name, String PIN, GeoPoint currentLocation, String line) {
         this.mobileNumber = mobileNumber;
         this.PIN = PIN;
         this.currentLocation = currentLocation;
@@ -26,21 +23,7 @@ public class user {
         this.line = line;
     }
 
-    public String getMyDriver() {
-        return myDriver;
-    }
 
-    public void setMyDriver(String myDriver) {
-        this.myDriver = myDriver;
-    }
-
-    public String getMyPositionDiscripition() {
-        return myPositionDiscripition;
-    }
-
-    public void setMyPositionDiscripition(String myPositionDiscripition) {
-        this.myPositionDiscripition = myPositionDiscripition;
-    }
 
     public String getMobileNumber() {
         return mobileNumber;

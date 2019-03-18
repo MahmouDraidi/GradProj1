@@ -51,7 +51,7 @@
             android:textColor="@android:color/darker_gray" />
 
         <TextView
-            android:id="@+id/list_mob_num"
+            android:id="@+id/resSizeTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/userMobNum"
@@ -62,7 +62,7 @@
             android:textColor="@android:color/darker_gray" />
 
         <ImageView
-            android:id="@+id/numOfReservations"
+            android:id="@+id/res_userImage"
             android:layout_width="35dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
@@ -73,7 +73,7 @@
             android:id="@+id/posDiscription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/list_mob_num"
+            android:layout_below="@id/resSizeTV"
             android:layout_toEndOf="@id/userImage"
             android:text="Description: "
             android:textAlignment="viewStart"

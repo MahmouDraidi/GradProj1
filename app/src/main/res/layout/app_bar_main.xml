@@ -24,23 +24,15 @@
         android:id="@+id/incFrag"
         layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/requestButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="visible"
-        app:srcCompat="@android:drawable/ic_menu_add" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"
-        app:backgroundTint="@android:color/holo_red_dark"
-        app:srcCompat="@android:drawable/ic_notification_clear_all" />
+        android:background="@color/colorAccent"
+        android:text="طلب ركوب"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_anchor="@+id/incFrag"
+        app:layout_anchorGravity="bottom|center" />
 
 </android.support.design.widget.CoordinatorLayout>
