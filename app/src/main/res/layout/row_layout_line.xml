@@ -14,48 +14,38 @@
         android:layout_height="wrap_content"
         android:id="@+id/lineListRelLayout">
 
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/lineImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_launcher_background"
-            app:civ_border_width="2dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            app:civ_border_color="#FF000000" />
 
         <TextView
             android:id="@+id/lineName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@id/lineImage"
             android:layout_toStartOf="@id/messageDriverIcon"
+            android:ellipsize="end"
             android:text="Mahmoud Sameer Draidi "
+            android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-            android:textColor="@android:color/white"
-            android:ellipsize="end" />
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/lineActiveDrivers"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/lineName"
-            android:layout_toEndOf="@id/lineImage"
+            android:ellipsize="end"
             android:text="From nablus to baytlid "
+            android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:textColor="@android:color/darker_gray"
-            android:ellipsize="end" />
+            android:textColor="@android:color/darker_gray" />
 
         <TextView
             android:id="@+id/price"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/lineActiveDrivers"
-            android:layout_toEndOf="@id/lineImage"
             android:ellipsize="end"
             android:text="Passengers: 5"
+            android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 

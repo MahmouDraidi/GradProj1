@@ -1,4 +1,4 @@
-package com.gradproj1.user;
+package com.gradproj1;
 
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.gradproj1.R;
 import com.gradproj1.Reservation;
+import com.gradproj1.ReservationListAdapter;
 
 public class ReservationsList extends AppCompatActivity {
     private FirebaseFirestore db;
@@ -29,7 +30,11 @@ public class ReservationsList extends AppCompatActivity {
         recyclerView = findViewById(R.id.resListRecyclerview);
 
 
-        query = db.collection("reservations").whereEqualTo("line", SP.getString("line", ""));
+        query = db
+                .collection("reservations")
+                .whereEqualTo("line", SP.getString("line", ""))
+                .whereEqualTo("needDriver", true);
+
         setUpRecyclerView(query);
 
 
@@ -44,7 +49,7 @@ public class ReservationsList extends AppCompatActivity {
                 .setQuery(query, Reservation.class)
                 .build();
 
-        adapter = new ReservationListAdapter(options, SP.getString("line", ""), this);
+        adapter = new ReservationListAdapter(options, SP.getString("line", ""), SP.getString("number", ""), this);
 
 
         recyclerView.setHasFixedSize(true);

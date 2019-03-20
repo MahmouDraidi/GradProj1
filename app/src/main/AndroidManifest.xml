@@ -19,9 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".reservationPopup"
+            android:name=".MyPassengers_List"
             android:theme="@style/AppTheme.NoActionBar.myPopUp"></activity>
-        <activity android:name=".user.ReservationsList" />
+        <activity
+            android:name=".reservationPopup"
+            android:theme="@style/AppTheme.NoActionBar.myPopUp" />
+        <activity android:name=".ReservationsList" />
         <activity android:name=".line.linesList" />
         <activity android:name=".registeration" />
         <activity

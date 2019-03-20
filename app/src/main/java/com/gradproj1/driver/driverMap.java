@@ -10,7 +10,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -38,6 +37,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -48,16 +48,15 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.MyPassengers_List;
 import com.gradproj1.R;
 import com.gradproj1.line.line;
 import com.gradproj1.line.linesList;
 import com.gradproj1.login;
-import com.gradproj1.user.ReservationsList;
-import com.gradproj1.user.user;
+import com.gradproj1.ReservationsList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -118,7 +117,7 @@ public class driverMap extends AppCompatActivity
                     updateIsActive(true);
                     activatingSwitchStatus(true);
                     isActive = true;
-                    setListeners();
+                    setDriversListener();
                     showDrivers();
                     showPassengers();
                     location();
@@ -187,6 +186,10 @@ public class driverMap extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+    }
+
+    public void setDriversListener() {
         db.collection("lines").document(SP.getString("line", "")).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -234,53 +237,7 @@ public class driverMap extends AppCompatActivity
         }
     }
 
-    public void setListeners() {
 
-       /* db.collection("lines").document(Driver.getLine()).get()
-                .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                        if (documentSnapshot.exists()) {
-                            myLine = documentSnapshot.toObject(line.class);
-                            Map<String, user> active_users = myLine.getActiveUsers();
-
-                            for (String userID : active_users.keySet()) {
-                                db.collection("users").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                        if (e != null) {
-                                            toastMessage("Failed to load users");
-                                            return;
-                                        }
-                                        if (documentSnapshot.exists()) {
-                                            if (isActive) {
-                                                mMap.clear();
-                                                showPassengers();
-                                                showDrivers();
-                                                drawMyLoacation(false);
-                                            }
-                                        }
-                                    }
-                                });
-
-                            }
-                        } else toastMessage("Failed to find drivers");
-                    }
-                });*/
-        //when new user is active redraw map
-        db.collection("lines").document(Driver.getLine()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (isActive) {
-                    mMap.clear();
-                    showPassengers();
-                    drawMyLoacation(false);
-                    showDrivers();
-                }
-            }
-        });
-    }
 
     public void toastMessage(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
@@ -294,16 +251,18 @@ public class driverMap extends AppCompatActivity
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.toObject(driver.class).isActive()) {
-                            isActive = true;
-                            drawMyLoacation(true);
-                            setListeners();
-                            showDrivers();
-                            location();
-                            activatingSwitchStatus(true);
+                        if (documentSnapshot.exists()) {
+                            if (documentSnapshot.toObject(driver.class).isActive()) {
+                                isActive = true;
+                                drawMyLoacation(true);
+                                setDriversListener();
+                                showDrivers();
+                                location();
+                                activatingSwitchStatus(true);
 
 
-                        } else isActive = false;
+                            } else isActive = false;
+                        }
                     }
                 });
         return isActive;
@@ -378,7 +337,9 @@ public class driverMap extends AppCompatActivity
             startActivity(new Intent(this, ReservationsList.class));
 
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.my_passengers) {
+            startActivity(new Intent(this, MyPassengers_List.class));
+
 
         } else if (id == R.id.nav_setting) {
 
@@ -415,6 +376,13 @@ public class driverMap extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
+        setDriversListener();
+
+        final LatLngBounds PALESTINE = new LatLngBounds(
+                new LatLng(31.022610, 34.231112), new LatLng(33.245395, 35.681387));
+
+// Constrain the camera target to the Adelaide bounds.
+        mMap.setLatLngBoundsForCameraTarget(PALESTINE);
 
 
         //buildLineRoute();

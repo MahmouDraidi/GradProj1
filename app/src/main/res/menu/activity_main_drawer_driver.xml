@@ -17,9 +17,9 @@
             android:icon="@drawable/ic_transfer_within_a_station_black_24dp"
             android:title="حجوزات الركاب" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/my_passengers"
             android:icon="@drawable/ic_menu_share"
-            android:title="Share" />
+            android:title="ركابي" />
     </group>
 
     <item android:title="More">
