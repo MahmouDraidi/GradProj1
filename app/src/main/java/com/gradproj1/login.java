@@ -188,8 +188,12 @@ public class login extends AppCompatActivity {
 
     public void registerNow(View v) {
 
-        Intent intent = new Intent (this, Register.class);
-        startActivity(intent);
+
+       Intent intent = new Intent (this, Register.class);
+
+
+
+       startActivity(intent);
     //    setContentView(R.layout.activity_enter_number);
 
     }

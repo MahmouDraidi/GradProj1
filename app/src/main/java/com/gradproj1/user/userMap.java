@@ -62,7 +62,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class userMap extends AppCompatActivity
+public class  userMap extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, RoutingListener {
 
 
