@@ -40,12 +40,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
@@ -62,7 +64,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class  userMap extends AppCompatActivity
+public class userMap extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, RoutingListener {
 
 
@@ -115,13 +117,31 @@ public class  userMap extends AppCompatActivity
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 db.collection("reservations").document(User.getMobileNumber()).delete();
+                                                db.collection("drivers").document(res.getReservationDriver()).update("myPassengers", FieldValue.arrayRemove(User.getMobileNumber()));
+                                                updatePassengersNum(res.getReservationDriver(), res.getReservationSize());
+
                                             }
                                         })
                                                 .setNegativeButton("إلغاء", null);
                                         AlertDialog alert = builder.create();
                                         alert.show();
+                                    } else {
 
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(userMap.this);
+                                        builder.setMessage("أنت لدى حجز مع " + res.getDriverName() + " هل تريد الإلغاء؟");
+                                        builder.setPositiveButton("الغاء الحجز", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                db.collection("reservations").document(User.getMobileNumber()).update("cancelRes", true);
+
+                                            }
+                                        })
+                                                .setNegativeButton("تراجع", null);
+                                        AlertDialog alert = builder.create();
+                                        alert.show();
                                     }
+
+
                                 } else showPopup();
                             }
                         });
@@ -150,7 +170,20 @@ public class  userMap extends AppCompatActivity
         location();
 
 
+    }
 
+    public void updatePassengersNum(String resDriver, final int cancelledResSize) {
+        db.collection("drivers").document(resDriver).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            int passengersNum = documentSnapshot.toObject(driver.class).getCurrentPassengersNum();
+                            db.collection("drivers").document(res.getReservationDriver()).update("currentPassengersNum", passengersNum - cancelledResSize);
+
+                        }
+                    }
+                });
     }
 
     private void initUser() {
@@ -213,7 +246,6 @@ public class  userMap extends AppCompatActivity
 
     }
 
-
     @SuppressWarnings("MissingPermission")
     private Location getLastKnownLocation() {
 
@@ -241,7 +273,6 @@ public class  userMap extends AppCompatActivity
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-
                             line Line = documentSnapshot.toObject(line.class);
                             List<String> dID = Line.getActiveDrivers();
                             dID.addAll(Line.getNonActiveDrivers());
@@ -255,8 +286,6 @@ public class  userMap extends AppCompatActivity
                                             }
                                         });
                             }
-
-
                         }
                     }
                 });
@@ -356,8 +385,28 @@ public class  userMap extends AppCompatActivity
         drawMyLoacation(true);
         //buildLineRoute();
 
-    }
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater().inflate(R.layout.marker_window, null);
+
+                TextView titleTV = (TextView) v.findViewById(R.id.markerTitle);
+                TextView descTV = (TextView) v.findViewById(R.id.markerDesc);
+
+                titleTV.setText(marker.getTitle());
+                descTV.setText(marker.getSnippet());
+
+                return v;
+            }
+        });
+
+    }
 
 
     public void showDrivers() {
@@ -385,8 +434,7 @@ public class  userMap extends AppCompatActivity
                                                     GeoPoint GP = dr.getCurrentLocation();
                                                     LatLng loc = new LatLng(GP.getLatitude(), GP.getLongitude());
 
-                                                    mMap.addMarker(new MarkerOptions().position(loc).title(dr.getName())
-                                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
+                                                    setDriverMarker(loc, dr.getName(), "عدد الركاب: " + String.valueOf(dr.getCurrentPassengersNum()));
 
                                                 }
                                             }
@@ -405,6 +453,14 @@ public class  userMap extends AppCompatActivity
                         L.add(documentSnapshot.get("drivers").toString());
                     }
                 });*/
+    }
+
+    private void setDriverMarker(LatLng loc, String title, String snipp) {
+        mMap.addMarker(new MarkerOptions()
+                .position(loc)
+                .title(title)
+                .snippet(snipp)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));
     }
 
 
@@ -495,7 +551,6 @@ public class  userMap extends AppCompatActivity
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = mMap.addPolyline(polyOptions);
             polylines.add(polyline);
-
             Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_SHORT).show();
         }
     }

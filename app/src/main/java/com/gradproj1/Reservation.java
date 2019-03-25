@@ -1,5 +1,6 @@
 package com.gradproj1;
 
+import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.driver.driver;
 import com.gradproj1.user.user;
 
@@ -13,6 +14,17 @@ public class Reservation {
     private int reservationSize;
     private String placeDetails;
     private boolean needDriver;
+    private GeoPoint currentLocation;
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    private String driverName;
 
     public String getUserName() {
         return userName;
@@ -23,6 +35,14 @@ public class Reservation {
     }
 
     private String userName;
+
+    public GeoPoint getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(GeoPoint currentLocation) {
+        this.currentLocation = currentLocation;
+    }
 
     public String getLine() {
         return line;

@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -48,15 +50,19 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.gradproj1.MyPassengers_List;
 import com.gradproj1.R;
+import com.gradproj1.Reservation;
 import com.gradproj1.line.line;
 import com.gradproj1.line.linesList;
 import com.gradproj1.login;
 import com.gradproj1.ReservationsList;
+import com.gradproj1.user.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -78,6 +84,7 @@ public class driverMap extends AppCompatActivity
     boolean isActive = false;
     static boolean garageView = true;
     ImageView garage_switch;
+    Button navigateMyPassengers;
 
 
     @Override
@@ -95,21 +102,10 @@ public class driverMap extends AppCompatActivity
         initDriver();
         isActive = getIsDriverActive();
         garage_switch = (ImageView) findViewById(R.id.garage_switch);
+        navigateMyPassengers = findViewById(R.id.myPassengersButton);
 
 
-//        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(final View view) {
-//
-//
-//               /* mMap.addMarker(new MarkerOptions().position(new LatLng(35.123456,32.412544)).title("Marker in Sydney")
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi)));*/
-//                // buildLineRoute();
-//                toastMessage(fab.getBackgroundTintList().toString());
-//
-//            }
-//        });
+
         activatingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -138,6 +134,21 @@ public class driverMap extends AppCompatActivity
 
             }
         });
+        /*navigateMyPassengers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Location loc1 = new Location("");
+                loc1.setLatitude(32.255132);
+                loc1.setLongitude(35.185162);
+
+                Location loc2 = new Location("");
+                loc2.setLatitude(32.264543);
+                loc2.setLongitude(35.130513);
+
+                float distanceInMeters = loc1.distanceTo(loc2);
+                toastMessage(String.valueOf(distanceInMeters));
+            }
+        });*/
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -186,6 +197,7 @@ public class driverMap extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
 
     }
 
@@ -236,7 +248,6 @@ public class driverMap extends AppCompatActivity
             activatingSwitch.setTextColor(Color.GRAY);
         }
     }
-
 
 
     public void toastMessage(String s) {
@@ -386,9 +397,37 @@ public class driverMap extends AppCompatActivity
 
 
         //buildLineRoute();
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater().inflate(R.layout.marker_window, null);
+
+                TextView titleTV = (TextView) v.findViewById(R.id.markerTitle);
+                TextView descTV = (TextView) v.findViewById(R.id.markerDesc);
+
+                titleTV.setText(marker.getTitle());
+                descTV.setText(marker.getSnippet());
+
+                return v;
+            }
+        });
+
+        db.collection("reservations").whereEqualTo("line", Driver.getLine()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                mMap.clear();
+                showDrivers();
+                showPassengers();
+            }
+        });
 
     }
-
 
 
     private void initDriver() {
@@ -402,24 +441,40 @@ public class driverMap extends AppCompatActivity
 
     public void showPassengers() {
 
-       /* db.collection("lines").document(Driver.getLine()).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("reservations").whereEqualTo("line", Driver.getLine()).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            line myLine = documentSnapshot.toObject(line.class);
-                            Map<String, user> activeUsers = myLine.getActiveUsers();
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (final Reservation q : queryDocumentSnapshots.toObjects(Reservation.class)) {
 
-                            for (user u : activeUsers.values()) {
-                                GeoPoint GP = u.getCurrentLocation();
-                                LatLng loc = new LatLng(GP.getLatitude(), GP.getLongitude());
-                                mMap
-                                        .addMarker(new MarkerOptions().position(loc).title(u.getName())
-                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_marker_icon)));
-                            }
+                            db.collection("users").document(q.getUserMobileNumber()).get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if (documentSnapshot.exists()) {
+                                                user u = documentSnapshot.toObject(user.class);
+                                                GeoPoint g = u.getCurrentLocation();
+
+                                                LatLng L = new LatLng(g.getLatitude(), g.getLongitude());
+
+                                                mMap.addMarker(new MarkerOptions()
+                                                        .title(u.getName())
+                                                        .snippet("السائق: " + q.getDriverName() + "\n" + q.getPlaceDetails())
+                                                        .position(L)
+                                                        .icon(q.isNeedDriver() ?
+                                                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+                                                                : BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                                );
+                                                        /*.icon(q.isNeedDriver()?
+                                                                BitmapDescriptorFactory.fromResource(R.drawable.ic_user_marker_icon_green)
+                                                                :BitmapDescriptorFactory.fromResource(R.drawable.ic_user_marker_icon)));*/
+
+                                            }
+                                        }
+                                    });
                         }
                     }
-                });*/
+                });
     }
 
     public void showDrivers() {
@@ -450,9 +505,13 @@ public class driverMap extends AppCompatActivity
                                             }
                                         });
                                 mMap.addMarker(new MarkerOptions().position(new LatLng(myLine.getGarage1().getLatitude(), myLine.getGarage1().getLongitude()))
-                                        .title(myLine.getGarage1Discription()).zIndex(10));
+                                        .title(myLine.getGarage1Discription()).zIndex(10)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                                 mMap.addMarker(new MarkerOptions().position(new LatLng(myLine.getGarage2().getLatitude(), myLine.getGarage2().getLongitude()))
-                                        .title(myLine.getGarage2Discription()).zIndex(10));
+                                        .title(myLine.getGarage2Discription()).zIndex(10)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+
+                                );
                             }
                         } else toastMessage("Failed to find drivers");
                     }

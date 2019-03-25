@@ -36,13 +36,9 @@
             android:text="محمودسمير دريدي"
             android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-<<<<<<< Updated upstream
-            android:textColor="@android:color/white" />
-=======
             android:textColor="@android:color/white"
-            android:onClick="gotoDriverProfile"
-            android:ellipsize="end" />
->>>>>>> Stashed changes
+            android:onClick="gotoDriverProfile" />
+
 
         <TextView
             android:id="@+id/driverDirectionTV"

@@ -61,16 +61,6 @@
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 
-        <ImageView
-            android:id="@+id/res_userImage"
-            android:layout_width="35dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_message_black_24dp" />
-
         <TextView
             android:id="@+id/posDiscription"
             android:layout_width="wrap_content"
@@ -83,13 +73,53 @@
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 
-        <Button
-            android:id="@+id/addRes"
+        <LinearLayout
+            android:id="@+id/buttonsGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="إضافــــــة"
-            android:visibility="gone"
-            android:layout_below="@id/posDiscription" />
+            android:layout_below="@+id/posDiscription"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="معلومات" />
+
+            <Button
+                android:id="@+id/addRes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:text="إضافــــــة"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="مراسلة" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cancelResLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonsGroup"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/cancelResButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="الغاء" />
+        </LinearLayout>
 
 
     </RelativeLayout>

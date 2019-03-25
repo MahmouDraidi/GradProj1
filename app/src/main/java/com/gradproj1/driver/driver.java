@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.firestore.GeoPoint;
 import com.gradproj1.user.user;
 
+import java.util.List;
 import java.util.Map;
 
 public class driver {
@@ -15,10 +16,11 @@ public class driver {
     private String PIN;
     private String line;
     private boolean isActive;
-    private int passengersNum;
     private int maxPassengersNum;
 
-    Map<String, user> myPassengers;
+    private int currentPassengersNum;
+
+    private List<String> myPassengers;
 
 
 
@@ -39,11 +41,11 @@ public class driver {
         return mobileNum;
     }
 
-    public Map<String, user> getMyPassengers() {
+    public List<String> getMyPassengers() {
         return myPassengers;
     }
 
-    public void setMyPassengers(Map<String, user> myPassengers) {
+    public void setMyPassengers(List<String> myPassengers) {
         this.myPassengers = myPassengers;
     }
 
@@ -55,13 +57,14 @@ public class driver {
         this.maxPassengersNum = maxPassengersNum;
     }
 
-    public int getPassengersNum() {
-        return passengersNum;
+    public int getCurrentPassengersNum() {
+        return currentPassengersNum;
     }
 
-    public void setPassengersNum(int passengersNum) {
-        this.passengersNum = passengersNum;
+    public void setCurrentPassengersNum(int currentPassengersNum) {
+        this.currentPassengersNum = currentPassengersNum;
     }
+
 
     public void setMobileNum(String mobileNum) {
         this.mobileNum = mobileNum;

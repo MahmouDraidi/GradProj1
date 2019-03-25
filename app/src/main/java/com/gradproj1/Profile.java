@@ -72,8 +72,8 @@ public class Profile extends AppCompatActivity {
 
         // check if my profile
         if (isMe){edit.setVisibility(View.VISIBLE);
-                  }
-        else {edit.setVisibility(View.INVISIBLE);
+                  } else {
+            edit.setVisibility(View.GONE);
             editMyData.setText("");}
     }
 
