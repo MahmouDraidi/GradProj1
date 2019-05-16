@@ -11,6 +11,16 @@ public class user {
     private String line;
     private boolean isActive;
 
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
+
+    private String imgURL;
+
     public user() {
 
     }

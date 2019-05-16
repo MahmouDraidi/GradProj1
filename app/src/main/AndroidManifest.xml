@@ -58,7 +58,6 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Register" />
-        <activity android:name=".MessageActivity" />
         <activity android:name=".driver.DriversListActivity" />
         <activity
             android:name=".driver.driverMap"

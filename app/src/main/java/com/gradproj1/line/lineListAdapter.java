@@ -1,6 +1,9 @@
 package com.gradproj1.line;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -8,23 +11,30 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 import com.gradproj1.R;
+import com.gradproj1.user.userMap;
 
 public class lineListAdapter extends FirestoreRecyclerAdapter<line, lineListAdapter.ListHolder> {
     String myLine = "";
     Context context;
+    SharedPreferences SP;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     public lineListAdapter(@NonNull FirestoreRecyclerOptions<line> options, String myLine, Context c) {
         super(options);
         this.myLine = myLine;
         context = c;
+        SP = c.getSharedPreferences("mobile_number", context.MODE_PRIVATE);
     }
 
     @Override
@@ -34,17 +44,37 @@ public class lineListAdapter extends FirestoreRecyclerAdapter<line, lineListAdap
         //holder.totalDriversNum.setText("All"+model.getActiveDrivers().size());
         holder.active.setText("Active Drivers: " + model.getActiveDrivers().size());
         holder.price.setText("Price: " + model.getPrice());
-        if (model.getName().equals(myLine)) {
+        if (model.getName().equals(SP.getString("line", ""))) {
 
             holder.nameTV.setTextColor(Color.parseColor("#FF9800"));
 
         }
-        holder.rl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, "You pressed item in pos: " + holder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        if (!model.getName().equals(SP.getString("line", ""))) {
+            holder.rl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // Toast.makeText(context, "You pressed item in pos: " + holder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("هل بالفعل تريد تغيير الخط إلى:\n " + holder.nameTV.getText().toString());
+                    builder.setPositiveButton("تغيير", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            db.collection("users").document(SP.getString("number", "")).update("line", holder.nameTV.getText().toString());
+                            SP.edit().putString("line", holder.nameTV.getText().toString()).apply();
+                            context.startActivity(new Intent(context, userMap.class));
+
+
+                        }
+                    })
+                            .setNegativeButton("إلغاء", null);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+        }
 
 
     }
@@ -63,6 +93,7 @@ public class lineListAdapter extends FirestoreRecyclerAdapter<line, lineListAdap
         TextView price;
         RelativeLayout rl;
         RecyclerView rv;
+
 
         public ListHolder(View itemView) {
             super(itemView);

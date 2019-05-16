@@ -189,7 +189,7 @@ public class login extends AppCompatActivity {
     public void registerNow(View v) {
 
 
-       Intent intent = new Intent (this, MessageActivity.class);
+       Intent intent = new Intent (this, Register.class);
 
 
 

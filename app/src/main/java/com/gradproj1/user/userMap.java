@@ -40,6 +40,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -51,11 +52,13 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.gradproj1.Profile;
 import com.gradproj1.R;
 import com.gradproj1.Reservation;
 import com.gradproj1.driver.DriversListActivity;
 import com.gradproj1.driver.driver;
 import com.gradproj1.line.line;
+import com.gradproj1.line.linesList;
 import com.gradproj1.login;
 import com.gradproj1.reservationPopup;
 
@@ -338,10 +341,20 @@ public class userMap extends AppCompatActivity
             // Handle the camera action
             startActivity(new Intent(this, DriversListActivity.class));
 
-        } else if (id == R.id.nav_drivers) {
+        } else if (id == R.id.nav_prof) {
+            Intent intent = new Intent(this, Profile.class);
 
+            intent.putExtra("path", SP.getString("number", ""));
+            intent.putExtra("type", "users");
+            intent.putExtra("isMe", true);
+            startActivity(intent);
 
         } else if (id == R.id.nav_lines) {
+            Intent linesIntent = new Intent(this, linesList.class);
+
+            startActivity(linesIntent);
+
+
 
         } else if (id == R.id.nav_share) {
 
@@ -385,6 +398,11 @@ public class userMap extends AppCompatActivity
         drawMyLoacation(true);
         //buildLineRoute();
 
+        final LatLngBounds PALESTINE = new LatLngBounds(
+                new LatLng(31.022610, 34.231112), new LatLng(33.245395, 35.681387));
+        mMap.setLatLngBoundsForCameraTarget(PALESTINE);
+
+
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
@@ -410,8 +428,7 @@ public class userMap extends AppCompatActivity
 
 
     public void showDrivers() {
-        String lineOfUser = "";
-        lineOfUser = User.getLine();
+
 
 
         db.collection("lines").document(SP.getString("line", "")).get()
@@ -441,6 +458,14 @@ public class userMap extends AppCompatActivity
                                         });
                             }
                         } else toastMessage("Failed to find drivers");
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(myLine.getGarage1().getLatitude(), myLine.getGarage1().getLongitude()))
+                                .title(myLine.getGarage1Discription()).zIndex(10)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(myLine.getGarage2().getLatitude(), myLine.getGarage2().getLongitude()))
+                                .title(myLine.getGarage2Discription()).zIndex(10)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+
+                        );
                     }
                 });
 

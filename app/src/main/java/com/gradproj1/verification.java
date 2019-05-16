@@ -33,8 +33,8 @@ public class verification extends AppCompatActivity {
     TextView signUpTextView;
     SharedPreferences SP;
     LinearLayout LinLay1, LinLay2;
-    String phone_num = "";
-
+    String mob_num = "";
+    String dest = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +50,25 @@ public class verification extends AppCompatActivity {
         LinLay1 = (LinearLayout) findViewById(R.id.linLay);
         SP = getSharedPreferences("mobile_number", MODE_PRIVATE);
 
+
         Bundle data = getIntent().getExtras();
-        phone_num = data.getString("number");
+        if (data != null) {
+            if (data.containsKey("numberFromReg")) {
+                dest = "reg";
+                mob_num = data.getString("numberFromReg");
 
-
+            } else if (data.containsKey("numberFromLogin")) {
+                dest = "login";
+                mob_num = data.getString("numberFromLogin");
+            }
+        }
 
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO uncomment verify and remove the uncommented when enabling verification
-                // verifyMobileNumber();
-                SP.edit().putString("number", phone_num).apply();
+                //verifyMobileNumber();
+                SP.edit().putString("number", mob_num).apply();
                 move();
 
             }
@@ -88,8 +96,8 @@ public class verification extends AppCompatActivity {
             }
 
         };
-
-        // send_sms(phone_num);
+        //TODO uncomment send_sms
+        // send_sms(mob_num);
     }
 
     public void send_sms(String s) {
@@ -109,10 +117,10 @@ public class verification extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //here you can open new activity
-                            Toast.makeText(getApplicationContext(), "Login Successfull", Toast.LENGTH_LONG).show();
-                            SP.edit().putString("number", phone_num).apply();
-                            toastMessage(phone_num);
-                            //  move();
+                            if (dest.equals("log"))
+                                SP.edit().putString("number", mob_num).apply();
+                            //TODO uncommect move
+                            //move();
                             finish();
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -127,18 +135,26 @@ public class verification extends AppCompatActivity {
     public void move() {
         Intent i;
         String type = "";
-        type = SP.getString("type", "");
-        switch (type) {
-            case "user":
-                i = new Intent(this, userMap.class);
-                startActivity(i);
-                break;
-            case "driver":
+        if (dest.equals("reg")) {
+            i = new Intent(this, Registration.class);
+            i.putExtra("numberFromVerf", mob_num);
+            startActivity(i);
 
-                i = new Intent(this, driverMap.class);
-                startActivity(i);
-                break;
+        } else {
+            type = SP.getString("type", "");
+            switch (type) {
+                case "user":
+                    i = new Intent(this, userMap.class);
+                    startActivity(i);
+                    break;
+                case "driver":
+
+                    i = new Intent(this, driverMap.class);
+                    startActivity(i);
+                    break;
+            }
         }
+        finish();
     }
 
     public void toastMessage(String s) {

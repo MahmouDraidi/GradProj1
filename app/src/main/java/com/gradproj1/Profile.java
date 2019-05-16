@@ -47,7 +47,6 @@ public class Profile extends AppCompatActivity {
         line = findViewById(R.id.line);
         passenger = findViewById(R.id.passenger);
         mobile =  findViewById(R.id.mobile);
-        textView8 = findViewById(R.id.textView8);
 
         edit = findViewById(R.id.editIcon);
          editMyData = findViewById(R.id.editMyData);
@@ -98,11 +97,10 @@ public class Profile extends AppCompatActivity {
                             name.setEnabled(false);
                             line.setText(note.get("line").toString());
                             line.setEnabled(false);
-                            passenger.setText(note.get("passengersNum").toString() );
+                            passenger.setText((boolean) note.get("active") ? note.get("currentPassengersNum").toString() : "غير نشط");
                             passenger.setEnabled(false);
                             mobile.setText(note.get("mobileNum").toString());
                             mobile.setEnabled(false);
-                            textView8.setText("الحمولة :");
 
                         }
                         else { Toast.makeText(Profile.this, "not found !",Toast.LENGTH_SHORT).show();}

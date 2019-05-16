@@ -32,9 +32,7 @@ public class ReservationsList extends AppCompatActivity {
 
         query = db
                 .collection("reservations")
-                .whereEqualTo("line", SP.getString("line", ""))
-                .whereEqualTo("needDriver", true);
-
+                .whereEqualTo("line", SP.getString("line", ""));
         setUpRecyclerView(query);
 
 
@@ -49,7 +47,7 @@ public class ReservationsList extends AppCompatActivity {
                 .setQuery(query, Reservation.class)
                 .build();
 
-        adapter = new ReservationListAdapter(options, SP.getString("line", ""), SP.getString("number", ""), this);
+        adapter = new ReservationListAdapter(options, SP.getString("line", ""), SP.getString("number", ""), this, "all");
 
 
         recyclerView.setHasFixedSize(true);

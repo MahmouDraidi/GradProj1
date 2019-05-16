@@ -26,25 +26,18 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="216dp"
+        android:layout_height="217dp"
         android:gravity="end"
         android:orientation="vertical"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="right|bottom">
 
-        <Switch
-            android:id="@+id/acivateDriverSwitch"
-
+        <ToggleButton
+            android:id="@+id/acivateDriverSwitch1"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
             android:background="@drawable/oval"
-            android:checked="false"
-            android:paddingLeft="5dp"
-            android:text="off"
-            android:textAlignment="center"
-            android:textColor="@android:color/darker_gray" />
+            android:text="ToggleButton" />
 
         <Button
             android:id="@+id/myPassengersButton"
