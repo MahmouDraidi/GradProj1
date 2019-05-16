@@ -145,6 +145,34 @@ public class login extends AppCompatActivity {
                 });
     }
 
+    public void defineDriver1(String mobNum) {
+
+        db.collection("drivers").document(mobNum).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+
+                            driver Driver = documentSnapshot.toObject(driver.class);
+
+                            SP.edit().putString("number", Driver.getMobileNumber()).apply();
+                            SP.edit().putString("line", Driver.getLine()).apply();
+                            SP.edit().putString("type", "driver").apply();
+                            SP.edit().putString("name", Driver.getName()).apply();
+                            SP.edit().putString("PIN", Driver.getPIN()).apply();
+                            move();
+
+                        } else toastMessage("This number is not registered, you need to sign up");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        toastMessage("Something went wrong!");
+                    }
+                });
+    }
+
 
     public void move() {
         Intent i = new Intent(this, verification.class);
