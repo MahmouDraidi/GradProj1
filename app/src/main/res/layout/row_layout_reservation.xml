@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
-    android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="@color/colorPrimary">
+    android:layout_marginEnd="8dp"
+    android:background="@color/colorAccent"
+    app:cardBackgroundColor="@android:color/black">
 
     <RelativeLayout
         android:id="@+id/userListRelLayout"
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/userImage"
+            android:id="@+id/userImageReg"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="5dp"
@@ -23,7 +23,7 @@
             android:layout_marginEnd="5dp"
             android:src="@drawable/ic_launcher_background"
             app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
+            app:civ_border_width="1dp" />
 
         <TextView
             android:id="@+id/list_userNameTV"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_toStartOf="@id/messageDriverIcon"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:ellipsize="end"
             android:text="محمودسمير دريدي"
             android:textAlignment="viewStart"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/list_userNameTV"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:ellipsize="end"
             android:text="0595403748"
             android:textAlignment="viewStart"
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/userMobNum"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:text="Reservations: 5"
             android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/resSizeTV"
             android:layout_marginBottom="8dp"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:text="Description: "
             android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
@@ -118,10 +118,45 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="الغاء" />
+                android:text="الغاء الحجز" />
         </LinearLayout>
 
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/resOptions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_google_signin_btn_text_light_focused"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/row_res_account"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+
+            android:layout_weight="1"
+            android:src="@drawable/ic_account_circle_black_24dp" />
+
+        <ImageView
+            android:id="@+id/row_res_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:contentDescription="إنزال"
+            android:src="@drawable/ic_exit_to_app_black_24dp" />
+
+        <ImageView
+            android:id="@+id/row_res_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+
+            android:layout_weight="1"
+            android:src="@drawable/ic_chat_black_24dp" />
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

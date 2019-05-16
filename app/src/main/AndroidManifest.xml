@@ -18,15 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Registration"></activity>
         <activity
             android:name=".MyPassengers_List"
-            android:theme="@style/AppTheme.NoActionBar.myPopUp"></activity>
+            android:theme="@style/AppTheme.NoActionBar.myPopUp" />
         <activity
             android:name=".reservationPopup"
             android:theme="@style/AppTheme.NoActionBar.myPopUp" />
         <activity android:name=".ReservationsList" />
         <activity android:name=".line.linesList" />
-        <activity android:name=".registeration" />
         <activity
             android:name=".login"
             android:configChanges="orientation|screenSize"
@@ -57,7 +57,7 @@
             android:name=".verification"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Register" />
+        <activity android:name=".Profile" />
         <activity android:name=".driver.DriversListActivity" />
         <activity
             android:name=".driver.driverMap"

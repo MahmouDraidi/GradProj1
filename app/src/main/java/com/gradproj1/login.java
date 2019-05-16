@@ -54,14 +54,16 @@ public class login extends AppCompatActivity {
                 case "user":
                     i = new Intent(this, userMap.class);
                     startActivity(i);
+                    finish();
                     break;
                 case "driver":
 
                     i = new Intent(this, driverMap.class);
                     startActivity(i);
+                    finish();
                     break;
             }
-            finish();
+
         }
 
 
@@ -75,15 +77,17 @@ public class login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (mobile_num_editText.getText().toString().length() != 10)
+                String ss = mobile_num_editText.getText().toString();
+                if (ss.length() != 10 || (!ss.startsWith("056") && !ss.startsWith("059")))
                     toastMessage("Please enter valid number");
                 else {
-                    entered_number = "+97" + mobile_num_editText.getText().toString();
+                    entered_number = "+97" + ss;
                     defineUser(entered_number);
                 }
             }
         });
         //end of button onClick listener
+
     }
 
     public void defineUser(final String mobNumber) {
@@ -123,7 +127,6 @@ public class login extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            toastMessage("I'm driver");
 
                             driver Driver = documentSnapshot.toObject(driver.class);
 
@@ -148,7 +151,7 @@ public class login extends AppCompatActivity {
 
     public void move() {
         Intent i = new Intent(this, verification.class);
-        i.putExtra("number", entered_number);
+        i.putExtra("numberFromLogin", entered_number);
         startActivity(i);
 
     }
@@ -189,7 +192,7 @@ public class login extends AppCompatActivity {
     public void registerNow(View v) {
 
 
-       Intent intent = new Intent (this, Register.class);
+        Intent intent = new Intent(this, Registration.class);
 
 
 

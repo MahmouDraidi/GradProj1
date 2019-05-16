@@ -40,7 +40,7 @@ public class MyPassengers_List extends AppCompatActivity {
                 .setQuery(query, Reservation.class)
                 .build();
 
-        adapter = new ReservationListAdapter(options, SP.getString("line", ""), SP.getString("number", ""), this);
+        adapter = new ReservationListAdapter(options, SP.getString("line", ""), SP.getString("number", ""), this, "myPassengers");
 
 
         recyclerView.setHasFixedSize(true);

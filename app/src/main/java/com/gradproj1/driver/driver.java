@@ -22,6 +22,16 @@ public class driver {
 
     private List<String> myPassengers;
 
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
+
+    private String imgURL;
+
 
 
     public driver() {

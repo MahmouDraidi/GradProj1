@@ -15,19 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "10843101332-ofpfvpn08eujkd72qebr0miclkaj9nuu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.gradproj1",
-            "certificate_hash": "846d13e03a9aca2b2bfe2e33f4dc37c092a262be"
-          }
-        },
-        {
           "client_id": "10843101332-6ibemp2ev08scl7ff9dt1t5fla2q0fqf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.gradproj1",
             "certificate_hash": "adaee0335c3ed9dd5bcac64821ef0b077ac8fc7e"
+          }
+        },
+        {
+          "client_id": "10843101332-ofpfvpn08eujkd72qebr0miclkaj9nuu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gradproj1",
+            "certificate_hash": "846d13e03a9aca2b2bfe2e33f4dc37c092a262be"
           }
         },
         {
@@ -41,20 +41,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "10843101332-8p0jgr0vfvrg07j5r67b5t9sfkg23vav.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     },
@@ -85,20 +78,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "10843101332-8p0jgr0vfvrg07j5r67b5t9sfkg23vav.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

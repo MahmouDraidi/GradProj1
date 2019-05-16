@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/userImage"
+            android:id="@+id/userImageReg"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerVertical="true"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_toStartOf="@id/messageDriverIcon"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:ellipsize="end"
             android:text="محمودسمير دريدي"
             android:textAlignment="viewStart"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/driverNameTV"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:ellipsize="end"
             android:text="From nablus to baytlid "
             android:textAlignment="viewStart"
@@ -57,13 +57,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/driverDirectionTV"
-            android:layout_toEndOf="@id/userImage"
+            android:layout_toEndOf="@id/userImageReg"
             android:ellipsize="end"
             android:text="Passengers: 5"
             android:textAlignment="viewStart"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textColor="@android:color/darker_gray" />
 
+        <TextView
+            android:id="@+id/hiddenMobNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:ellipsize="end"
+            android:textAlignment="viewStart"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textColor="@android:color/darker_gray" />
 
         <ImageView
             android:id="@+id/messageDriverIcon"

@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_prof"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="الصفحة الشخصية" />
+        <item
             android:id="@+id/nav_drivers"
             android:icon="@drawable/ic_local_taxi_black_24dp"
             android:title="السائقين" />
@@ -12,10 +16,6 @@
             android:id="@+id/nav_lines"
             android:icon="@drawable/ic_transform_black_24dp"
             android:title="الخطوط" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_transfer_within_a_station_black_24dp"
-            android:title="Slideshow" />
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"
